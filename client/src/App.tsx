@@ -12,6 +12,7 @@ import FavouritesPage from './pages/FavouritesPage';
 import SearchPage from './pages/SearchPage';
 import MessagesPage from './pages/MessagesPage';
 import ProfilePage from './pages/ProfilePage';
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import PrivateRoute from './components/PrivateRoute';
 
 export default function App() {
@@ -24,6 +25,7 @@ export default function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/ads/:id" element={<AdDetailPage />} />
           <Route path="/search" element={<SearchPage />} />
           <Route element={<PrivateRoute />}>

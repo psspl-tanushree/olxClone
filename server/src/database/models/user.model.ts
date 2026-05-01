@@ -26,6 +26,12 @@ export class User extends Model {
   @Column({ type: DataType.STRING })
   avatar: string;
 
+  @Column({ type: DataType.STRING(6), allowNull: true, field: 'reset_otp' })
+  resetOtp: string | null;
+
+  @Column({ type: DataType.DATE, allowNull: true, field: 'reset_otp_expiry' })
+  resetOtpExpiry: Date | null;
+
   @HasMany(() => Ad)
   ads: Ad[];
 

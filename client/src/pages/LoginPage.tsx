@@ -69,7 +69,13 @@ export default function LoginPage() {
             </button>
           </form>
 
-          <p className="text-center text-sm text-olx-muted mt-5">
+          <div className="text-center mt-3">
+            <Link to="/forgot-password" className="text-sm text-olx-teal hover:underline">
+              Forgot password?
+            </Link>
+          </div>
+
+          <p className="text-center text-sm text-olx-muted mt-4">
             New to OLX?{' '}
             <Link to="/register" className="text-olx-teal font-semibold hover:underline">
               Create account
