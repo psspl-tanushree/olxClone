@@ -32,6 +32,9 @@ export class User extends Model {
   @Column({ type: DataType.DATE, allowNull: true, field: 'reset_otp_expiry' })
   resetOtpExpiry: Date | null;
 
+  @Column({ type: DataType.STRING, defaultValue: 'user' })
+  role: string;
+
   @HasMany(() => Ad)
   ads: Ad[];
 
