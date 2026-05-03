@@ -1,15 +1,17 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Trash2, Eye, Plus, Edit } from 'lucide-react';
+import { Trash2, Eye, Plus, Edit, Zap } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../store';
 import { fetchMyAdsHandler, deleteAdHandler, updateAdHandler } from '../store/slices/adsSlice';
+import PromoteModal from '../components/PromoteModal';
 
 export default function MyAdsPage() {
   const dispatch = useDispatch<AppDispatch>();
   const { myAds, loading } = useSelector((state: RootState) => state.ads);
   const navigate = useNavigate();
+  const [promoteAd, setPromoteAd] = useState<{ id: number; title: string } | null>(null);
 
   useEffect(() => {
     dispatch(fetchMyAdsHandler());
@@ -49,6 +51,7 @@ export default function MyAdsPage() {
   }
 
   return (
+    <>
     <div className="bg-olx-bg min-h-screen py-6">
       <div className="max-w-4xl mx-auto px-4">
         <div className="flex items-center justify-between mb-6">
@@ -116,10 +119,21 @@ export default function MyAdsPage() {
                 {/* Actions */}
                 <div className="flex flex-col gap-2 shrink-0">
                   <button
-                    onClick={() => handleToggleStatus(ad)}
+                    onClick={() => navigate(`/edit-ad/${ad.id}`)}
                     className="text-xs border border-olx-teal text-olx-teal px-3 py-1.5 rounded hover:bg-olx-teal hover:text-white transition-colors flex items-center gap-1"
                   >
-                    <Edit size={12} />
+                    <Edit size={12} /> Edit
+                  </button>
+                  <button
+                    onClick={() => setPromoteAd({ id: ad.id, title: ad.title })}
+                    className="text-xs border border-yellow-400 text-yellow-600 px-3 py-1.5 rounded hover:bg-yellow-50 transition-colors flex items-center gap-1"
+                  >
+                    <Zap size={12} /> Promote
+                  </button>
+                  <button
+                    onClick={() => handleToggleStatus(ad)}
+                    className="text-xs border border-gray-300 text-olx-muted px-3 py-1.5 rounded hover:bg-gray-50 transition-colors flex items-center gap-1"
+                  >
                     {ad.status === 'active' ? 'Mark Sold' : 'Mark Active'}
                   </button>
                   <button
@@ -135,5 +149,15 @@ export default function MyAdsPage() {
         )}
       </div>
     </div>
+
+    {promoteAd && (
+      <PromoteModal
+        adId={promoteAd.id}
+        adTitle={promoteAd.title}
+        onClose={() => setPromoteAd(null)}
+        onSuccess={() => dispatch(fetchMyAdsHandler())}
+      />
+    )}
+  </>
   );
 }

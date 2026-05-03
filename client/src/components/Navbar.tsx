@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Search, MapPin, ChevronDown, Plus, Heart, MessageSquare, User, LogOut, ChevronRight } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../store';
@@ -17,8 +17,9 @@ export default function Navbar() {
   const dispatch = useDispatch<AppDispatch>();
   const { user } = useSelector((state: RootState) => state.auth);
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState(searchParams.get('search') || '');
   const [selectedCity, setSelectedCity] = useState('India');
   const [showCityDropdown, setShowCityDropdown] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
@@ -26,6 +27,12 @@ export default function Navbar() {
 
   const cityRef = useRef<HTMLDivElement>(null);
   const profileRef = useRef<HTMLDivElement>(null);
+
+  // Keep Navbar city in sync with URL params (sidebar filter updates URL directly)
+  useEffect(() => {
+    const urlCity = searchParams.get('city');
+    setSelectedCity(urlCity && INDIAN_CITIES.includes(urlCity) ? urlCity : 'India');
+  }, [searchParams]);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -41,6 +48,9 @@ export default function Navbar() {
     const params = new URLSearchParams();
     if (searchQuery) params.set('search', searchQuery);
     if (selectedCity !== 'India') params.set('city', selectedCity);
+    // Preserve active category filter when searching within a category
+    const categorySlug = searchParams.get('categorySlug');
+    if (categorySlug) params.set('categorySlug', categorySlug);
     navigate(`/search?${params.toString()}`);
   };
 
@@ -87,7 +97,17 @@ export default function Navbar() {
                 {filteredCities.map((city) => (
                   <button
                     key={city}
-                    onClick={() => { setSelectedCity(city); setShowCityDropdown(false); setCitySearch(''); }}
+                    onClick={() => {
+                      setSelectedCity(city);
+                      setShowCityDropdown(false);
+                      setCitySearch('');
+                      const params = new URLSearchParams();
+                      if (searchQuery) params.set('search', searchQuery);
+                      if (city !== 'India') params.set('city', city);
+                      const categorySlug = searchParams.get('categorySlug');
+                      if (categorySlug) params.set('categorySlug', categorySlug);
+                      navigate(`/search?${params.toString()}`);
+                    }}
                     className={`w-full text-left px-4 py-2 text-sm hover:bg-olx-bg transition-colors ${selectedCity === city ? 'text-olx-teal font-semibold' : 'text-olx-text'}`}
                   >
                     {city}

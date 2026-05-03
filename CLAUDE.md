@@ -11,53 +11,80 @@ A full-stack web portal replicating core OLX India (olx.in) functionality, built
 - **Auth:** JWT + bcrypt (@nestjs/jwt, @nestjs/passport)
 - **File Storage:** Cloudinary (ad images)
 - **Maps:** Leaflet.js (location picking)
+- **Payments:** Razorpay (ad promotion / featured ads)
+- **Email:** Nodemailer (OTP-based password reset)
+- **API Docs:** Swagger / OpenAPI (`/api/docs`)
+- **State Management:** Redux Toolkit (frontend)
 - **Version Control:** Git
 
 ## Project Structure
 ```
-olx-clone/
-├── client/                  # React frontend (Vite)
-│   ├── src/
-│   │   ├── components/
-│   │   ├── pages/
-│   │   ├── hooks/
-│   │   ├── store/           # Zustand state
-│   │   └── api/             # Axios client
-├── server/                  # NestJS backend
-│   ├── src/
-│   │   ├── auth/            # JWT auth module
-│   │   ├── users/           # Users module
-│   │   ├── ads/             # Ads module
-│   │   ├── categories/      # Categories module
-│   │   ├── favourites/      # Favourites module
-│   │   ├── messages/        # Messages module
-│   │   ├── upload/          # Cloudinary upload module
-│   │   ├── database/        # Sequelize config & models
-│   │   └── common/          # Guards, decorators, pipes
-│   ├── test/
-│   └── nest-cli.json
+olxClone/
+├── client/                  # React frontend (Vite, port 5173)
+│   └── src/
+│       ├── components/      # Reusable UI (Navbar, Footer, AdCard, PromoteModal, PrivateRoute)
+│       ├── pages/           # Route-level pages (see Pages section below)
+│       ├── store/           # Redux slices: ads, auth, categories, favourites
+│       ├── services/        # Per-feature Axios API calls
+│       ├── common/          # axiosInstance, labels
+│       └── api/             # Base axios config
+├── server/                  # NestJS backend (port 3000)
+│   └── src/
+│       ├── auth/            # JWT auth, OTP password reset, mail service
+│       ├── users/           # User profile CRUD
+│       ├── ads/             # Ad CRUD, search, filters, pagination
+│       ├── categories/      # Category tree (hierarchical)
+│       ├── favourites/      # Save / unsave ads
+│       ├── messages/        # Buyer–seller messaging
+│       ├── payments/        # Razorpay order creation & verification
+│       ├── upload/          # Cloudinary image upload (max 5 files)
+│       ├── database/        # Models, migrations, seeders, config
+│       └── common/          # JWT guard, CurrentUser decorator
 └── docker-compose.yml
 ```
 
-## Core Features (Priority Order)
-1. User registration & login (JWT auth)
-2. Browse ads by category & city
-3. Post a new ad (title, description, price, images, location)
-4. Ad detail page with seller contact
-5. Search with filters (category, price range, city)
-6. My Ads dashboard (CRUD on own listings)
-7. Favourites / saved ads
-8. Responsive mobile-first UI matching OLX look & feel
+## Pages (Frontend)
+- **HomePage** — category carousel, featured ads, recent listings
+- **LoginPage / RegisterPage** — authentication
+- **ForgotPasswordPage** — OTP-based password reset
+- **PostAdPage** — create ad with images + Leaflet map location picker
+- **EditAdPage** — edit own ad details and images
+- **AdDetailPage** — full ad view, seller info, message button
+- **SearchPage** — keyword + category + city + price range filters
+- **MyAdsPage** — dashboard for user's own ads (edit / delete / promote)
+- **FavouritesPage** — saved ads
+- **MessagesPage** — conversation list + per-ad message thread
+- **ProfilePage** — user profile management
 
-## Key Categories to Implement
-Cars, Motorcycles, Mobile Phones, Electronics, Furniture, Jobs, Real Estate, Fashion
+## NestJS Modules
+| Module | Key Endpoints |
+|---|---|
+| auth | POST /auth/register, /auth/login, /auth/forgot-password, /auth/reset-password |
+| users | GET/PATCH /users/me |
+| ads | GET /ads, GET /ads/:id, POST /ads, PATCH /ads/:id, DELETE /ads/:id, GET /ads/my-ads |
+| categories | GET /categories, GET /categories/:slug |
+| favourites | GET /favourites, POST /favourites (toggle) |
+| messages | POST /messages, GET /messages, GET /messages/:adId |
+| payments | GET /payments/plans, POST /payments/create-order, POST /payments/verify |
+| upload | POST /upload/images |
 
 ## Database Models (Sequelize)
-- **User** — id, name, email, phone, passwordHash, city, avatar, createdAt
-- **Category** — id, name, slug, icon, parentId
-- **Ad** — id, title, description, price, images (JSONB), categoryId, userId, city, state, lat, lng, status, views, createdAt
+- **User** — id, name, email, phone, passwordHash, city, avatar, resetOtp, resetOtpExpiry, createdAt
+- **Category** — id, name, slug, icon, parentId (self-referential hierarchy)
+- **Ad** — id, title, description, price, images (JSONB), categoryId, userId, city, state, lat, lng, status (active/sold/inactive), views, featuredUntil, createdAt
 - **Favourite** — userId, adId
 - **Message** — id, senderId, receiverId, adId, body, createdAt
+- **Payment** — id, userId, adId, razorpayOrderId, razorpayPaymentId, amount, plan, status
+
+## Migrations (in order)
+1. `20260428000001-create-users`
+2. `20260428000002-create-categories`
+3. `20260428000003-create-ads`
+4. `20260428000004-create-favourites`
+5. `20260428000005-create-messages`
+6. `20260428000006-add-reset-otp-to-users`
+7. `20260428000007-add-featured-to-ads`
+8. `20260428000008-create-payments`
 
 ## Development Commands
 ```bash
@@ -98,6 +125,12 @@ JWT_SECRET=your_jwt_secret
 CLOUDINARY_CLOUD_NAME=
 CLOUDINARY_API_KEY=
 CLOUDINARY_API_SECRET=
+RAZORPAY_KEY_ID=
+RAZORPAY_KEY_SECRET=
+SMTP_HOST=
+SMTP_PORT=
+SMTP_USER=
+SMTP_PASS=
 PORT=3000
 ```
 
@@ -109,11 +142,13 @@ chore: update sequelize migration for messages
 ```
 
 ## Evaluation Checklist
-- [ ] Claude Code used throughout development
-- [ ] Git history with meaningful commits
-- [ ] Database migrations committed (Sequelize)
-- [ ] NestJS modules structured per feature
-- [ ] API documented (routes listed in README)
-- [ ] All 8 core features working
-- [ ] Mobile-responsive UI
-- [ ] .env.example present (no secrets committed)
+- [x] Claude Code used throughout development
+- [x] Git history with meaningful commits
+- [x] Database migrations committed (Sequelize)
+- [x] NestJS modules structured per feature
+- [x] API documented (Swagger at /api/docs)
+- [x] All 8 core features working
+- [x] Mobile-responsive UI
+- [x] .env.example present (no secrets committed)
+- [x] Forgot password / OTP email flow
+- [x] Razorpay payment integration for ad promotion
