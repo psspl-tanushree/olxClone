@@ -51,7 +51,7 @@ export class AdminService {
 
   // ── Users ─────────────────────────────────────────────────────────────────
   async getUsers(page = 1, limit = 20, search?: string) {
-    const where: any = {};
+    const where: any = { role: { [Op.ne]: 'admin' } };
     if (search) {
       where[Op.or] = [
         { name:  { [Op.iLike]: `%${search}%` } },

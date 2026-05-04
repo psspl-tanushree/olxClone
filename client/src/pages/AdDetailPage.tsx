@@ -110,7 +110,7 @@ export default function AdDetailPage() {
           <div className="md:col-span-2 space-y-4">
             {/* Image Gallery */}
             <div className="bg-white border border-olx-border rounded-lg overflow-hidden">
-              <div className="relative aspect-video bg-gray-100 select-none">
+              <div className="relative aspect-video bg-gray-100 select-none"> 
                 {currentAd.images?.length > 0 ? (
                   <img
                     src={currentAd.images[activeImage].startsWith('http')

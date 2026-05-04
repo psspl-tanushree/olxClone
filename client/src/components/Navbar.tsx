@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { Search, MapPin, ChevronDown, Plus, Heart, MessageSquare, User, LogOut, ChevronRight } from 'lucide-react';
+import { Search, MapPin, ChevronDown, Plus, Heart, MessageSquare, User, LogOut, ChevronRight, X, ShieldCheck } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../store';
 import { logout } from '../store/slices/authSlice';
@@ -51,6 +51,13 @@ export default function Navbar() {
     // Preserve active category filter when searching within a category
     const categorySlug = searchParams.get('categorySlug');
     if (categorySlug) params.set('categorySlug', categorySlug);
+    navigate(`/search?${params.toString()}`);
+  };
+
+  const handleClearSearch = () => {
+    setSearchQuery('');
+    const params = new URLSearchParams(searchParams);
+    params.delete('search');
     navigate(`/search?${params.toString()}`);
   };
 
@@ -120,13 +127,25 @@ export default function Navbar() {
 
         {/* Search Bar */}
         <form onSubmit={handleSearch} className="flex-1 flex max-w-[600px]">
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Find Cars, Mobile Phones and more..."
-            className="flex-1 px-4 py-2 text-sm text-olx-text focus:outline-none rounded-l-sm border-0"
-          />
+          <div className="relative flex-1">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Find Cars, Mobile Phones and more..."
+              className="w-full px-4 py-2 pr-8 text-sm text-olx-text focus:outline-none rounded-l-sm border-0"
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={handleClearSearch}
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                aria-label="Clear search"
+              >
+                <X size={15} />
+              </button>
+            )}
+          </div>
           <button
             type="submit"
             className="bg-olx-yellow px-4 py-2 hover:bg-olx-yellow-hover transition-colors rounded-r-sm"
@@ -170,6 +189,15 @@ export default function Navbar() {
 
                 {showProfileMenu && (
                   <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-md shadow-xl border border-olx-border z-50 py-1">
+                    {user.role === 'admin' && (
+                      <Link
+                        to="/admin"
+                        onClick={() => setShowProfileMenu(false)}
+                        className="flex items-center gap-3 px-4 py-2.5 text-sm text-purple-600 hover:bg-purple-50"
+                      >
+                        <ShieldCheck size={15} /> Admin Panel
+                      </Link>
+                    )}
                     <Link
                       to="/profile"
                       onClick={() => setShowProfileMenu(false)}

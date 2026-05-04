@@ -31,6 +31,63 @@ function SkeletonCard() {
   );
 }
 
+function PriceRangeFilter({
+  onApply,
+  onCancel,
+  initialMin,
+  initialMax,
+}: {
+  onApply: (min: string, max: string) => void;
+  onCancel: () => void;
+  initialMin: string;
+  initialMax: string;
+}) {
+  const [min, setMin] = useState(initialMin);
+  const [max, setMax] = useState(initialMax);
+
+  const handleCancel = () => {
+    setMin('');
+    setMax('');
+    onCancel();
+  };
+
+  return (
+    <div className="bg-white border border-olx-border rounded p-4">
+      <h3 className="font-bold text-olx-text text-sm mb-3">Price Range</h3>
+      <div className="space-y-2">
+        <input
+          type="number"
+          placeholder="Min ₹"
+          value={min}
+          onChange={(e) => setMin(e.target.value)}
+          className="w-full border border-olx-border rounded px-3 py-1.5 text-sm focus:outline-none focus:border-olx-teal"
+        />
+        <input
+          type="number"
+          placeholder="Max ₹"
+          value={max}
+          onChange={(e) => setMax(e.target.value)}
+          className="w-full border border-olx-border rounded px-3 py-1.5 text-sm focus:outline-none focus:border-olx-teal"
+        />
+        <div className="flex gap-2">
+          <button
+            onClick={() => onApply(min, max)}
+            className="flex-1 bg-olx-teal text-white text-sm py-1.5 rounded hover:bg-olx-teal-hover transition-colors"
+          >
+            Apply
+          </button>
+          <button
+            onClick={handleCancel}
+            className="flex-1 bg-white text-olx-muted text-sm py-1.5 rounded border border-olx-border hover:bg-olx-bg transition-colors"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function SearchPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -43,6 +100,26 @@ export default function SearchPage() {
   const [sort, setSort] = useState('newest');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [showFilters, setShowFilters] = useState(false);
+  const [priceFilterKey, setPriceFilterKey] = useState(0);
+
+  const handlePriceApply = (min: string, max: string) => {
+    setMinPrice(min);
+    setMaxPrice(max);
+    const newParams = new URLSearchParams(searchParams);
+    if (min) newParams.set('minPrice', min); else newParams.delete('minPrice');
+    if (max) newParams.set('maxPrice', max); else newParams.delete('maxPrice');
+    setSearchParams(newParams);
+  };
+
+  const handlePriceCancel = () => {
+    setMinPrice('');
+    setMaxPrice('');
+    const newParams = new URLSearchParams(searchParams);
+    newParams.delete('minPrice');
+    newParams.delete('maxPrice');
+    setSearchParams(newParams);
+    setPriceFilterKey((k) => k + 1);
+  };
 
   const search = searchParams.get('search') || '';
   const categorySlug = searchParams.get('categorySlug') || '';
@@ -200,31 +277,13 @@ export default function SearchPage() {
             </div>
 
             {/* Price Range */}
-            <div className="bg-white border border-olx-border rounded p-4">
-              <h3 className="font-bold text-olx-text text-sm mb-3">Price Range</h3>
-              <div className="space-y-2">
-                <input
-                  type="number"
-                  placeholder="Min ₹"
-                  value={minPrice}
-                  onChange={(e) => setMinPrice(e.target.value)}
-                  className="w-full border border-olx-border rounded px-3 py-1.5 text-sm focus:outline-none focus:border-olx-teal"
-                />
-                <input
-                  type="number"
-                  placeholder="Max ₹"
-                  value={maxPrice}
-                  onChange={(e) => setMaxPrice(e.target.value)}
-                  className="w-full border border-olx-border rounded px-3 py-1.5 text-sm focus:outline-none focus:border-olx-teal"
-                />
-                <button
-                  onClick={() => {}}
-                  className="w-full bg-olx-teal text-white text-sm py-1.5 rounded hover:bg-olx-teal-hover transition-colors"
-                >
-                  Apply
-                </button>
-              </div>
-            </div>
+            <PriceRangeFilter
+              key={priceFilterKey}
+              initialMin={minPrice}
+              initialMax={maxPrice}
+              onApply={handlePriceApply}
+              onCancel={handlePriceCancel}
+            />
           </aside>
 
           {/* Results */}
