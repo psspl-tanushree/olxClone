@@ -1,10 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MessageSquare, Send, ArrowLeft } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store';
-import { getConversations, getThread, sendMessage } from '../services/messages.service';
+import { getConversations, getThread } from '../services/messages.service';
+import { connectSocket, disconnectSocket } from '../socket';
+import type { Socket } from 'socket.io-client';
 
 interface MsgThread {
   otherUser: { id: number; name: string; avatar?: string };
@@ -17,6 +19,8 @@ interface Message {
   id: number;
   body: string;
   senderId: number;
+  receiverId?: number;
+  adId?: number;
   createdAt: string;
   sender: { id: number; name: string };
 }
@@ -30,17 +34,66 @@ export default function MessagesPage() {
   const [reply, setReply] = useState('');
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
+  const activeThreadRef = useRef<MsgThread | null>(null);
+  const socketRef = useRef<Socket | null>(null);
+  const bottomRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (!user) { navigate('/login'); return; }
+
+    const token = localStorage.getItem('token');
+    if (token) {
+      const s = connectSocket(token);
+      socketRef.current = s;
+
+      s.on('newMessage', (msg: Message) => {
+        const thread = activeThreadRef.current;
+        if (
+          thread &&
+          msg.adId === thread.ad.id &&
+          (msg.senderId === thread.otherUser.id || msg.receiverId === thread.otherUser.id ||
+           msg.senderId === user.id || msg.receiverId === user.id)
+        ) {
+          setMessages((prev) => {
+            // avoid duplicates (e.g. sender already appended optimistically)
+            if (prev.some((m) => m.id === msg.id)) return prev;
+            return [...prev, msg];
+          });
+        }
+
+        // Update last message preview in thread list
+        setThreads((prev) =>
+          prev.map((t) =>
+            t.ad.id === msg.adId &&
+            (t.otherUser.id === msg.senderId || t.otherUser.id === msg.receiverId)
+              ? { ...t, lastMessage: msg.body, lastTime: msg.createdAt }
+              : t,
+          ),
+        );
+      });
+    }
+
     loadConversations();
+
+    return () => {
+      disconnectSocket();
+    };
   }, [user]);
+
+  // keep ref in sync so the socket listener always sees the current thread
+  useEffect(() => {
+    activeThreadRef.current = activeThread;
+  }, [activeThread]);
+
+  // scroll to bottom when messages change
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
 
   const loadConversations = async () => {
     setLoading(true);
     try {
       const data = await getConversations();
-      // Build thread list from sent + received
       const threadMap = new Map<string, MsgThread>();
       [...(data.sent || []), ...(data.received || [])].forEach((msg: any) => {
         const otherUser = msg.senderId === user!.id ? msg.receiver : msg.sender;
@@ -73,19 +126,21 @@ export default function MessagesPage() {
     }
   };
 
-  const handleSend = async () => {
-    if (!reply.trim() || !activeThread) return;
-    setSending(true);
-    try {
-      await sendMessage({ receiverId: activeThread.otherUser.id, adId: activeThread.ad.id, message: reply });
-      setReply('');
-      const msgs = await getThread(activeThread.otherUser.id, activeThread.ad.id);
-      setMessages(msgs);
-    } catch {
-      toast.error('Failed to send');
-    } finally {
-      setSending(false);
+  const handleSend = () => {
+    if (!reply.trim() || !activeThread || sending) return;
+    const s = socketRef.current;
+    if (!s || !s.connected) {
+      toast.error('Not connected — please refresh');
+      return;
     }
+    setSending(true);
+    s.emit('sendMessage', {
+      receiverId: activeThread.otherUser.id,
+      adId: activeThread.ad.id,
+      message: reply,
+    });
+    setReply('');
+    setSending(false);
   };
 
   return (
@@ -175,6 +230,7 @@ export default function MessagesPage() {
                         );
                       })
                     )}
+                    <div ref={bottomRef} />
                   </div>
 
                   {/* Input */}
