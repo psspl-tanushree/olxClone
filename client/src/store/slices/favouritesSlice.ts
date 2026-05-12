@@ -1,12 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { fetchFavourites, toggleFavourite } from '../../services/favourites.service';
-
-interface Favourite {
-  id: number;
-  userId: number;
-  adId: number;
-  ad: any;
-}
+import { Ad, Favourite } from '../../types';
 
 interface FavouritesState {
   favourites: Favourite[];
@@ -20,18 +14,21 @@ const initialState: FavouritesState = {
   error: null,
 };
 
-export const fetchFavouritesHandler: any = createAsyncThunk(
+export const fetchFavouritesHandler = createAsyncThunk<Favourite[], void>(
   'favourites/fetchAll',
   (_: void, { rejectWithValue }) =>
-    fetchFavourites().catch((error) => error && rejectWithValue(error))
+    fetchFavourites().catch((err: Error) => rejectWithValue(err.message))
 );
 
-export const toggleFavouriteHandler: any = createAsyncThunk(
+export const toggleFavouriteHandler = createAsyncThunk<
+  { adId: number; saved: boolean; ad: Ad },
+  { adId: number; ad: Ad }
+>(
   'favourites/toggle',
-  (adId: number, { rejectWithValue }) =>
+  ({ adId, ad }, { rejectWithValue }) =>
     toggleFavourite(adId)
-      .then((result) => ({ adId, saved: result.saved }))
-      .catch((error) => error && rejectWithValue(error))
+      .then((result: { saved: boolean }) => ({ adId, saved: result.saved, ad }))
+      .catch((err: Error) => rejectWithValue(err.message))
 );
 
 const favouritesSlice = createSlice({
@@ -48,16 +45,25 @@ const favouritesSlice = createSlice({
         state.loading = false;
         state.favourites = action.payload;
       })
-      .addCase(fetchFavouritesHandler.rejected, (state) => {
+      .addCase(fetchFavouritesHandler.rejected, (state, action) => {
         state.loading = false;
+        state.error = (action.payload as string) ?? 'Failed to load saved ads.';
       });
 
-    builder
-      .addCase(toggleFavouriteHandler.fulfilled, (state, action: PayloadAction<{ adId: number; saved: boolean }>) => {
-        if (!action.payload.saved) {
-          state.favourites = state.favourites.filter((f) => f.adId !== action.payload.adId);
+    builder.addCase(
+      toggleFavouriteHandler.fulfilled,
+      (state, action: PayloadAction<{ adId: number; saved: boolean; ad: Ad }>) => {
+        const { adId, saved, ad } = action.payload;
+        if (saved) {
+          // Add to list if not already present (optimistic update)
+          if (!state.favourites.some((f) => f.adId === adId)) {
+            state.favourites.push({ id: Date.now(), userId: 0, adId, ad });
+          }
+        } else {
+          state.favourites = state.favourites.filter((f) => f.adId !== adId);
         }
-      });
+      }
+    );
   },
 });
 

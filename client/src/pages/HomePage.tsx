@@ -2,9 +2,12 @@ import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import toast from 'react-hot-toast';
 import { RootState, AppDispatch } from '../store';
 import { fetchAllAdsHandler } from '../store/slices/adsSlice';
+import { fetchFavouritesHandler, toggleFavouriteHandler } from '../store/slices/favouritesSlice';
 import AdCard from '../components/AdCard';
+import { Ad } from '../types';
 
 const CATEGORIES = [
   { name: 'Cars', slug: 'cars', icon: '🚗' },
@@ -43,12 +46,32 @@ function SkeletonCard() {
 export default function HomePage() {
   const dispatch = useDispatch<AppDispatch>();
   const { ads, loading } = useSelector((state: RootState) => state.ads);
+  const { favourites } = useSelector((state: RootState) => state.favourites);
+  const { user } = useSelector((state: RootState) => state.auth);
   const navigate = useNavigate();
   const catScrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     dispatch(fetchAllAdsHandler({ limit: 24 }));
   }, [dispatch]);
+
+  useEffect(() => {
+    if (user) dispatch(fetchFavouritesHandler());
+  }, [dispatch, user]);
+
+  const isFav = (adId: number) =>
+    favourites.some((f) => f.adId === adId || f.ad?.id === adId);
+
+  const handleToggleFav = (adId: number) => {
+    if (!user) { navigate('/login'); return; }
+    const ad = ads.find((a) => a.id === adId) as Ad;
+    if (!ad) return;
+    dispatch(toggleFavouriteHandler({ adId, ad })).then((result) => {
+      if (toggleFavouriteHandler.fulfilled.match(result)) {
+        toast.success(result.payload.saved ? 'Added to saved ads' : 'Removed from saved ads');
+      }
+    });
+  };
 
   const scrollCats = (dir: 'left' | 'right') => {
     if (catScrollRef.current) {
@@ -137,7 +160,14 @@ export default function HomePage() {
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
               {loading
                 ? Array.from({ length: 4 }).map((_, i) => <SkeletonCard key={i} />)
-                : carAds.map((ad) => <AdCard key={ad.id} ad={ad} />)}
+                : carAds.map((ad) => (
+                    <AdCard
+                      key={ad.id}
+                      ad={ad}
+                      isFavourited={isFav(ad.id)}
+                      onToggleFavourite={handleToggleFav}
+                    />
+                  ))}
             </div>
           </section>
         )}
@@ -157,7 +187,14 @@ export default function HomePage() {
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
               {loading
                 ? Array.from({ length: 4 }).map((_, i) => <SkeletonCard key={i} />)
-                : mobileAds.map((ad) => <AdCard key={ad.id} ad={ad} />)}
+                : mobileAds.map((ad) => (
+                    <AdCard
+                      key={ad.id}
+                      ad={ad}
+                      isFavourited={isFav(ad.id)}
+                      onToggleFavourite={handleToggleFav}
+                    />
+                  ))}
             </div>
           </section>
         )}
@@ -190,7 +227,14 @@ export default function HomePage() {
             </div>
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-              {freshAds.map((ad) => <AdCard key={ad.id} ad={ad} />)}
+              {freshAds.map((ad) => (
+                <AdCard
+                  key={ad.id}
+                  ad={ad}
+                  isFavourited={isFav(ad.id)}
+                  onToggleFavourite={handleToggleFav}
+                />
+              ))}
             </div>
           )}
         </section>

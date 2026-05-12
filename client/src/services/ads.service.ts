@@ -18,64 +18,74 @@ export interface CreateAdPayload {
   categoryId: number;
   city?: string;
   state?: string;
+  lat?: number;
+  lng?: number;
 }
 
+/**
+ * Fetches paginated ads with optional filters.
+ * @param filters - Search query, category, city, price range, pagination
+ * @returns Paginated response `{ data: Ad[], total, page }`
+ * @throws Normalized error with user-facing message from response interceptor
+ */
 export const fetchAllAds = async (filters: AdFilters = {}) => {
-  try {
-    const response = await api.get('/ads', { params: filters });
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching ads:', error);
-    throw error;
-  }
+  const response = await api.get('/ads', { params: filters });
+  return response.data;
 };
 
+/**
+ * Fetches a single ad by ID.
+ * @param id - The ad's numeric ID
+ * @returns Full `Ad` object including user and category info
+ * @throws Normalized error if ad not found or request fails
+ */
 export const fetchAdById = async (id: number) => {
-  try {
-    const response = await api.get(`/ads/${id}`);
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching ad detail:', error);
-    throw error;
-  }
+  const response = await api.get(`/ads/${id}`);
+  return response.data;
 };
 
+/**
+ * Fetches the authenticated user's own ads.
+ * @returns Array of `Ad` objects belonging to the current user
+ * @throws Normalized error if not authenticated or request fails
+ */
 export const fetchMyAds = async () => {
-  try {
-    const response = await api.get('/ads/my');
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching my ads:', error);
-    throw error;
-  }
+  const response = await api.get('/ads/my');
+  return response.data;
 };
 
+/**
+ * Creates a new ad.
+ * @param data - Ad creation payload
+ * @returns The newly created `Ad` object
+ * @throws Normalized error with validation messages on 400/422
+ */
 export const createAd = async (data: CreateAdPayload) => {
-  try {
-    const response = await api.post('/ads', data);
-    return response.data;
-  } catch (error) {
-    console.error('Error creating ad:', error);
-    throw error;
-  }
+  const response = await api.post('/ads', data);
+  return response.data;
 };
 
-export const updateAd = async (id: number, data: Partial<CreateAdPayload> & { status?: string }) => {
-  try {
-    const response = await api.patch(`/ads/${id}`, data);
-    return response.data;
-  } catch (error) {
-    console.error('Error updating ad:', error);
-    throw error;
-  }
+/**
+ * Updates an existing ad.
+ * @param id - ID of the ad to update
+ * @param data - Partial ad fields to update
+ * @returns The updated `Ad` object
+ * @throws Normalized error if unauthorized or request fails
+ */
+export const updateAd = async (
+  id: number,
+  data: Partial<CreateAdPayload> & { status?: string }
+) => {
+  const response = await api.patch(`/ads/${id}`, data);
+  return response.data;
 };
 
+/**
+ * Deletes an ad by ID.
+ * @param id - ID of the ad to delete
+ * @throws Normalized error if unauthorized or request fails
+ */
 export const deleteAd = async (id: number) => {
-  try {
-    const response = await api.delete(`/ads/${id}`);
-    return response.data;
-  } catch (error) {
-    console.error('Error deleting ad:', error);
-    throw error;
-  }
+  const response = await api.delete(`/ads/${id}`);
+  return response.data;
 };

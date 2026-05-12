@@ -1,0 +1,2 @@
+# Lint check before commit
+cd client && npm run lint --silent || exit 1

@@ -38,6 +38,32 @@ export default function MessagesPage() {
   const socketRef = useRef<Socket | null>(null);
   const bottomRef = useRef<HTMLDivElement | null>(null);
 
+  const loadConversations = async () => {
+    setLoading(true);
+    try {
+      const data = await getConversations();
+      const threadMap = new Map<string, MsgThread>();
+      [...(data.sent || []), ...(data.received || [])].forEach((msg: any) => {
+        const otherUser = msg.senderId === user!.id ? msg.receiver : msg.sender;
+        const adId = msg.adId;
+        const key = `${otherUser?.id}-${adId}`;
+        if (!threadMap.has(key) && otherUser && msg.ad) {
+          threadMap.set(key, {
+            otherUser: { id: otherUser.id, name: otherUser.name, avatar: otherUser.avatar },
+            ad: msg.ad,
+            lastMessage: msg.body,
+            lastTime: msg.createdAt,
+          });
+        }
+      });
+      setThreads(Array.from(threadMap.values()));
+    } catch {
+      toast.error('Failed to load messages');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (!user) { navigate('/login'); return; }
 
@@ -89,32 +115,6 @@ export default function MessagesPage() {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
-
-  const loadConversations = async () => {
-    setLoading(true);
-    try {
-      const data = await getConversations();
-      const threadMap = new Map<string, MsgThread>();
-      [...(data.sent || []), ...(data.received || [])].forEach((msg: any) => {
-        const otherUser = msg.senderId === user!.id ? msg.receiver : msg.sender;
-        const adId = msg.adId;
-        const key = `${otherUser?.id}-${adId}`;
-        if (!threadMap.has(key) && otherUser && msg.ad) {
-          threadMap.set(key, {
-            otherUser: { id: otherUser.id, name: otherUser.name, avatar: otherUser.avatar },
-            ad: msg.ad,
-            lastMessage: msg.body,
-            lastTime: msg.createdAt,
-          });
-        }
-      });
-      setThreads(Array.from(threadMap.values()));
-    } catch {
-      toast.error('Failed to load messages');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const openThread = async (thread: MsgThread) => {
     setActiveThread(thread);

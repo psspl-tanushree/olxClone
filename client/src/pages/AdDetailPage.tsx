@@ -42,7 +42,10 @@ export default function AdDetailPage() {
 
   const handleToggleFav = async () => {
     if (!user) { navigate('/login'); return; }
-    await dispatch(toggleFavouriteHandler(currentAd!.id));
+    const result = await dispatch(toggleFavouriteHandler({ adId: currentAd!.id, ad: currentAd! }));
+    if (toggleFavouriteHandler.fulfilled.match(result)) {
+      toast.success(result.payload.saved ? 'Added to saved ads' : 'Removed from saved ads');
+    }
   };
 
   const handleShare = () => {

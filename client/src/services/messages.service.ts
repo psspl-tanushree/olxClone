@@ -1,4 +1,4 @@
-import { api } from '../common/axiosInstance';;
+import { api } from '../common/axiosInstance';
 
 export interface SendMessagePayload {
   receiverId: number;
