@@ -15,7 +15,9 @@ export class AdsController {
 
   @Get()
   findAll(@Query() query: any) {
-    return this.adsService.findAll(query);
+    // Extract `attr` namespace from query: ?attr[brand]=maruti&attr[fuel]=petrol
+    const { attr, ...rest } = query;
+    return this.adsService.findAll({ ...rest, attributes: attr });
   }
 
   @Get('my')

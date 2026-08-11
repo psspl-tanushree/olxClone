@@ -1,0 +1,56 @@
+# ─── Dependencies ───────────────────────────────────────────────────────────
+node_modules/
+client/node_modules/
+server/node_modules/
+
+# ─── Environment Variables (NEVER commit secrets) ───────────────────────────
+.env
+.env.local
+.env.development
+.env.production
+.env.staging
+server/.env
+client/.env
+*.env
+
+# ─── Build Output ───────────────────────────────────────────────────────────
+dist/
+build/
+client/dist/
+server/dist/
+
+# ─── Logs ────────────────────────────────────────────────────────────────────
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+logs/
+
+# ─── Runtime / OS ───────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+*.pem
+
+# ─── IDE / Editor ───────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ─── Uploads (local temp files — use Cloudinary in production) ──────────────
+server/uploads/*
+!server/uploads/.gitkeep
+
+# ─── Coverage & Test Output ─────────────────────────────────────────────────
+coverage/
+*.lcov
+.nyc_output/
+
+# ─── Misc ────────────────────────────────────────────────────────────────────
+*.tsbuildinfo
+.eslintcache
+.prettierignore

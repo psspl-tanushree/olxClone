@@ -16,7 +16,9 @@ export default function FavouritesPage() {
   }, [dispatch]);
 
   const handleToggle = async (adId: number) => {
-    const result = await dispatch(toggleFavouriteHandler(adId));
+    const fav = favourites.find((f) => f.adId === adId);
+    if (!fav) return;
+    const result = await dispatch(toggleFavouriteHandler({ adId, ad: fav.ad }));
     if (toggleFavouriteHandler.fulfilled.match(result)) {
       toast.success('Removed from saved ads');
     } else {
@@ -64,7 +66,7 @@ export default function FavouritesPage() {
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-            {favourites.map((f: any) => (
+            {favourites.map((f) => (
               <AdCard
                 key={f.id}
                 ad={f.ad}

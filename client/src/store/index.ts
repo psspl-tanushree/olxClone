@@ -3,6 +3,7 @@ import authReducer from './slices/authSlice';
 import adsReducer from './slices/adsSlice';
 import categoriesReducer from './slices/categoriesSlice';
 import favouritesReducer from './slices/favouritesSlice';
+import filterSchemasReducer from './slices/filterSchemasSlice';
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     ads: adsReducer,
     categories: categoriesReducer,
     favourites: favouritesReducer,
+    filterSchemas: filterSchemasReducer,
   },
 });
 

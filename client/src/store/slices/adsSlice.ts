@@ -9,23 +9,7 @@ import {
   AdFilters,
   CreateAdPayload,
 } from '../../services/ads.service';
-
-interface Ad {
-  id: number;
-  title: string;
-  description?: string;
-  price: number;
-  images: string[];
-  categoryId: number;
-  userId: number;
-  city?: string;
-  state?: string;
-  status: string;
-  views: number;
-  createdAt: string;
-  category?: { id: number; name: string; slug: string };
-  user?: { id: number; name: string; phone?: string; city?: string; avatar?: string };
-}
+import { Ad, PaginatedAds } from '../../types';
 
 interface AdsState {
   ads: Ad[];
@@ -47,40 +31,43 @@ const initialState: AdsState = {
   error: null,
 };
 
-export const fetchAllAdsHandler: any = createAsyncThunk(
+export const fetchAllAdsHandler = createAsyncThunk<PaginatedAds, AdFilters>(
   'ads/fetchAll',
   (filters: AdFilters, { rejectWithValue }) =>
-    fetchAllAds(filters).catch((error) => error && rejectWithValue(error))
+    fetchAllAds(filters).catch((err: Error) => rejectWithValue(err.message))
 );
 
-export const fetchAdByIdHandler: any = createAsyncThunk(
+export const fetchAdByIdHandler = createAsyncThunk<Ad, number>(
   'ads/fetchById',
   (id: number, { rejectWithValue }) =>
-    fetchAdById(id).catch((error) => error && rejectWithValue(error))
+    fetchAdById(id).catch((err: Error) => rejectWithValue(err.message))
 );
 
-export const fetchMyAdsHandler: any = createAsyncThunk(
+export const fetchMyAdsHandler = createAsyncThunk<Ad[], void>(
   'ads/fetchMy',
   (_: void, { rejectWithValue }) =>
-    fetchMyAds().catch((error) => error && rejectWithValue(error))
+    fetchMyAds().catch((err: Error) => rejectWithValue(err.message))
 );
 
-export const createAdHandler: any = createAsyncThunk(
+export const createAdHandler = createAsyncThunk<Ad, CreateAdPayload>(
   'ads/create',
   (data: CreateAdPayload, { rejectWithValue }) =>
-    createAd(data).catch((error) => error && rejectWithValue(error))
+    createAd(data).catch((err: Error) => rejectWithValue(err.message))
 );
 
-export const updateAdHandler: any = createAsyncThunk(
+export const updateAdHandler = createAsyncThunk<
+  Ad,
+  { id: number; payload: Partial<CreateAdPayload> & { status?: string } }
+>(
   'ads/update',
-  (data: { id: number; payload: Partial<CreateAdPayload> & { status?: string } }, { rejectWithValue }) =>
-    updateAd(data.id, data.payload).catch((error) => error && rejectWithValue(error))
+  (data, { rejectWithValue }) =>
+    updateAd(data.id, data.payload).catch((err: Error) => rejectWithValue(err.message))
 );
 
-export const deleteAdHandler: any = createAsyncThunk(
+export const deleteAdHandler = createAsyncThunk<void, number>(
   'ads/delete',
   (id: number, { rejectWithValue }) =>
-    deleteAd(id).catch((error) => error && rejectWithValue(error))
+    deleteAd(id).catch((err: Error) => rejectWithValue(err.message))
 );
 
 const adsSlice = createSlice({
@@ -97,14 +84,15 @@ const adsSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchAllAdsHandler.fulfilled, (state, action: PayloadAction<{ data: Ad[]; total: number; page: number }>) => {
+      .addCase(fetchAllAdsHandler.fulfilled, (state, action: PayloadAction<PaginatedAds>) => {
         state.loading = false;
         state.ads = action.payload.data;
         state.total = action.payload.total;
         state.page = action.payload.page;
       })
-      .addCase(fetchAllAdsHandler.rejected, (state) => {
+      .addCase(fetchAllAdsHandler.rejected, (state, action) => {
         state.loading = false;
+        state.error = (action.payload as string) ?? 'Failed to load ads.';
       });
 
     builder
@@ -116,8 +104,9 @@ const adsSlice = createSlice({
         state.loading = false;
         state.currentAd = action.payload;
       })
-      .addCase(fetchAdByIdHandler.rejected, (state) => {
+      .addCase(fetchAdByIdHandler.rejected, (state, action) => {
         state.loading = false;
+        state.error = (action.payload as string) ?? 'Failed to load ad.';
       });
 
     builder
@@ -129,8 +118,9 @@ const adsSlice = createSlice({
         state.loading = false;
         state.myAds = action.payload;
       })
-      .addCase(fetchMyAdsHandler.rejected, (state) => {
+      .addCase(fetchMyAdsHandler.rejected, (state, action) => {
         state.loading = false;
+        state.error = (action.payload as string) ?? 'Failed to load your ads.';
       });
 
     builder
@@ -141,16 +131,16 @@ const adsSlice = createSlice({
       .addCase(createAdHandler.fulfilled, (state) => {
         state.loading = false;
       })
-      .addCase(createAdHandler.rejected, (state) => {
+      .addCase(createAdHandler.rejected, (state, action) => {
         state.loading = false;
+        state.error = (action.payload as string) ?? 'Failed to create ad.';
       });
 
-    builder
-      .addCase(updateAdHandler.fulfilled, (state, action: PayloadAction<Ad>) => {
-        state.myAds = state.myAds.map((ad) =>
-          ad.id === action.payload.id ? action.payload : ad
-        );
-      });
+    builder.addCase(updateAdHandler.fulfilled, (state, action: PayloadAction<Ad>) => {
+      state.myAds = state.myAds.map((ad) =>
+        ad.id === action.payload.id ? action.payload : ad
+      );
+    });
 
     builder
       .addCase(deleteAdHandler.pending, (state) => {
@@ -159,8 +149,9 @@ const adsSlice = createSlice({
       .addCase(deleteAdHandler.fulfilled, (state) => {
         state.loading = false;
       })
-      .addCase(deleteAdHandler.rejected, (state) => {
+      .addCase(deleteAdHandler.rejected, (state, action) => {
         state.loading = false;
+        state.error = (action.payload as string) ?? 'Failed to delete ad.';
       });
   },
 });

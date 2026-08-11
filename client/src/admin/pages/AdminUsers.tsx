@@ -1,13 +1,19 @@
 import { useEffect, useState } from 'react';
-import { Search, ShieldCheck, Ban, ShieldOff } from 'lucide-react';
+import { Search, ShieldCheck, Ban, ShieldOff, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { adminApi } from '../adminApi';
+
+type PendingAction =
+  | { type: 'ban'; id: number; currentRole: string }
+  | { type: 'makeAdmin'; id: number };
 
 export default function AdminUsers() {
   const [data, setData]     = useState<any>(null);
   const [search, setSearch] = useState('');
   const [page, setPage]     = useState(1);
   const [loading, setLoading] = useState(true);
+  const [pending, setPending] = useState<PendingAction | null>(null);
+  const [confirming, setConfirming] = useState(false);
 
   const load = (p = page, s = search) => {
     setLoading(true);
@@ -24,23 +30,28 @@ export default function AdminUsers() {
     load(1, search);
   };
 
-  const handleBan = async (id: number, currentRole: string) => {
-    const action = currentRole === 'banned' ? 'Unban' : 'Ban';
-    if (!confirm(`${action} this user?`)) return;
+  const handleConfirm = async () => {
+    if (!pending) return;
+    setConfirming(true);
     try {
-      const res = await adminApi.banUser(id);
-      toast.success(`User ${res.role === 'banned' ? 'banned' : 'unbanned'}`);
+      if (pending.type === 'ban') {
+        const res = await adminApi.banUser(pending.id);
+        if (res.role === 'banned') {
+          toast.error('User has been banned successfully');
+        } else {
+          toast.success('User unbanned');
+        }
+      } else {
+        await adminApi.makeAdmin(pending.id);
+        toast.success('User has been promoted to Admin');
+      }
       load();
-    } catch { toast.error('Failed'); }
-  };
-
-  const handleMakeAdmin = async (id: number) => {
-    if (!confirm('Make this user an admin?')) return;
-    try {
-      await adminApi.makeAdmin(id);
-      toast.success('User is now admin');
-      load();
-    } catch { toast.error('Failed'); }
+    } catch {
+      toast.error('Failed');
+    } finally {
+      setConfirming(false);
+      setPending(null);
+    }
   };
 
   const roleBadge = (role: string) => {
@@ -49,8 +60,54 @@ export default function AdminUsers() {
     return 'bg-green-100 text-green-700';
   };
 
+  const confirmTitle = pending?.type === 'ban'
+    ? (pending.currentRole === 'banned' ? 'Unban this user?' : 'Ban this user?')
+    : 'Make this user an admin?';
+
+  const confirmDesc = pending?.type === 'ban'
+    ? (pending.currentRole === 'banned'
+        ? 'This will restore the user\'s access to the platform.'
+        : 'This will block the user from accessing the platform.')
+    : 'This will give the user full admin privileges.';
+
+  const confirmBtnClass = pending?.type === 'ban' && pending.currentRole !== 'banned'
+    ? 'bg-red-500 hover:bg-red-600 text-white'
+    : 'bg-olx-teal hover:opacity-90 text-white';
+
   return (
     <div className="space-y-4">
+      {/* Confirm modal */}
+      {pending && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
+          <div className="absolute inset-0 bg-black/50" onClick={() => !confirming && setPending(null)} />
+          <div className="relative bg-white rounded-xl shadow-2xl w-full max-w-sm p-6 z-10">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-base font-bold text-gray-800">{confirmTitle}</h2>
+              <button onClick={() => setPending(null)} disabled={confirming} className="text-gray-400 hover:text-gray-600">
+                <X size={18} />
+              </button>
+            </div>
+            <p className="text-sm text-gray-500 mb-5">{confirmDesc}</p>
+            <div className="flex gap-3 justify-end">
+              <button
+                onClick={() => setPending(null)}
+                disabled={confirming}
+                className="px-4 py-2 text-sm border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirm}
+                disabled={confirming}
+                className={`px-4 py-2 text-sm rounded-lg font-medium disabled:opacity-60 ${confirmBtnClass}`}
+              >
+                {confirming ? 'Please wait…' : 'Confirm'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-bold text-gray-800">Users</h1>
         <span className="text-sm text-gray-500">{data?.total ?? '...'} total</span>
@@ -106,7 +163,7 @@ export default function AdminUsers() {
                     {u.role !== 'admin' && (
                       <>
                         <button
-                          onClick={() => handleBan(u.id, u.role)}
+                          onClick={() => setPending({ type: 'ban', id: u.id, currentRole: u.role })}
                           className={`p-1.5 rounded transition-colors ${
                             u.role === 'banned'
                               ? 'text-green-600 hover:bg-green-50'
@@ -117,7 +174,7 @@ export default function AdminUsers() {
                           {u.role === 'banned' ? <ShieldOff size={15} /> : <Ban size={15} />}
                         </button>
                         <button
-                          onClick={() => handleMakeAdmin(u.id)}
+                          onClick={() => setPending({ type: 'makeAdmin', id: u.id })}
                           className="p-1.5 rounded text-purple-500 hover:bg-purple-50 transition-colors"
                           title="Make Admin"
                         >

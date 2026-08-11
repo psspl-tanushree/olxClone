@@ -18,8 +18,9 @@ export class AdsService {
     maxPrice?: number;
     page?: number;
     limit?: number;
+    attributes?: Record<string, string | string[]>;
   }) {
-    const { search, categoryId, city, minPrice, maxPrice, page = 1, limit = 20 } = query;
+    const { search, categoryId, city, minPrice, maxPrice, page = 1, limit = 20, attributes } = query;
     const where: any = { status: 'active' };
 
     if (search) where.title = { [Op.iLike]: `%${search}%` };
@@ -29,6 +30,28 @@ export class AdsService {
       where.price = {};
       if (minPrice) where.price[Op.gte] = minPrice;
       if (maxPrice) where.price[Op.lte] = maxPrice;
+    }
+
+    // JSONB attribute filtering: each key=value uses @> containment
+    // Multi-select (array value) uses OR across values
+    if (attributes && Object.keys(attributes).length > 0) {
+      const attrConditions: any[] = [];
+      for (const [key, value] of Object.entries(attributes)) {
+        if (!value || (Array.isArray(value) && value.length === 0)) continue;
+        if (Array.isArray(value)) {
+          // OR across selected multi-select values
+          attrConditions.push({
+            [Op.or]: value.map((v) => ({
+              attributes: { [Op.contains]: { [key]: v } },
+            })),
+          });
+        } else {
+          attrConditions.push({ attributes: { [Op.contains]: { [key]: value } } });
+        }
+      }
+      if (attrConditions.length > 0) {
+        where[Op.and] = [...(where[Op.and] ?? []), ...attrConditions];
+      }
     }
 
     const { rows, count } = await this.adModel.findAndCountAll({

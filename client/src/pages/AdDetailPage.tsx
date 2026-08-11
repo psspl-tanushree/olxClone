@@ -42,7 +42,10 @@ export default function AdDetailPage() {
 
   const handleToggleFav = async () => {
     if (!user) { navigate('/login'); return; }
-    await dispatch(toggleFavouriteHandler(currentAd!.id));
+    const result = await dispatch(toggleFavouriteHandler({ adId: currentAd!.id, ad: currentAd! }));
+    if (toggleFavouriteHandler.fulfilled.match(result)) {
+      toast.success(result.payload.saved ? 'Added to saved ads' : 'Removed from saved ads');
+    }
   };
 
   const handleShare = () => {
@@ -110,7 +113,7 @@ export default function AdDetailPage() {
           <div className="md:col-span-2 space-y-4">
             {/* Image Gallery */}
             <div className="bg-white border border-olx-border rounded-lg overflow-hidden">
-              <div className="relative aspect-video bg-gray-100 select-none">
+              <div className="relative aspect-video bg-gray-100 select-none"> 
                 {currentAd.images?.length > 0 ? (
                   <img
                     src={currentAd.images[activeImage].startsWith('http')
