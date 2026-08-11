@@ -60,7 +60,7 @@ export default function AdminCategories() {
         <h1 className="text-xl font-bold text-gray-800">Categories</h1>
         <button
           onClick={() => setShowAdd(!showAdd)}
-          className="flex items-center gap-1.5 bg-olx-teal text-white px-4 py-2 rounded-lg text-sm hover:opacity-90"
+          className="flex items-center gap-1.5 bg-sellora-primary text-white px-4 py-2 rounded-lg text-sm hover:opacity-90"
         >
           <Plus size={16} /> Add Category
         </button>
@@ -68,13 +68,13 @@ export default function AdminCategories() {
 
       {/* Add form */}
       {showAdd && (
-        <form onSubmit={handleAdd} className="bg-white border border-olx-teal/30 rounded-xl p-4 flex gap-3 flex-wrap items-end">
+        <form onSubmit={handleAdd} className="bg-white border border-sellora-primary/30 rounded-xl p-4 flex gap-3 flex-wrap items-end">
           <div>
             <label className="block text-xs font-semibold text-gray-600 mb-1">Name *</label>
             <input value={addForm.name}
               onChange={(e) => setAddForm(f => ({ ...f, name: e.target.value, slug: e.target.value.toLowerCase().replace(/\s+/g, '-') }))}
               placeholder="e.g. Electronics"
-              className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-olx-teal w-44"
+              className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-sellora-primary w-44"
             />
           </div>
           <div>
@@ -82,7 +82,7 @@ export default function AdminCategories() {
             <input value={addForm.slug}
               onChange={(e) => setAddForm(f => ({ ...f, slug: e.target.value }))}
               placeholder="e.g. electronics"
-              className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-olx-teal w-44"
+              className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-sellora-primary w-44"
             />
           </div>
           <div>
@@ -90,10 +90,10 @@ export default function AdminCategories() {
             <input value={addForm.icon}
               onChange={(e) => setAddForm(f => ({ ...f, icon: e.target.value }))}
               placeholder="📱"
-              className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-olx-teal w-20"
+              className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-sellora-primary w-20"
             />
           </div>
-          <button type="submit" className="bg-olx-teal text-white px-4 py-2 rounded-lg text-sm hover:opacity-90">Create</button>
+          <button type="submit" className="bg-sellora-primary text-white px-4 py-2 rounded-lg text-sm hover:opacity-90">Create</button>
           <button type="button" onClick={() => setShowAdd(false)} className="px-4 py-2 rounded-lg text-sm border border-gray-200 hover:bg-gray-50">Cancel</button>
         </form>
       )}
@@ -119,7 +119,7 @@ export default function AdminCategories() {
                 <td className="px-4 py-3">
                   {editingId === cat.id ? (
                     <input value={editForm.name} onChange={(e) => setEditForm(f => ({ ...f, name: e.target.value }))}
-                      className="border border-olx-teal rounded px-2 py-1 text-sm w-36 focus:outline-none" />
+                      className="border border-sellora-primary rounded px-2 py-1 text-sm w-36 focus:outline-none" />
                   ) : (
                     <span className="font-medium text-gray-800">{cat.name}</span>
                   )}
@@ -127,7 +127,7 @@ export default function AdminCategories() {
                 <td className="px-4 py-3 text-gray-500">
                   {editingId === cat.id ? (
                     <input value={editForm.slug} onChange={(e) => setEditForm(f => ({ ...f, slug: e.target.value }))}
-                      className="border border-olx-teal rounded px-2 py-1 text-sm w-36 focus:outline-none" />
+                      className="border border-sellora-primary rounded px-2 py-1 text-sm w-36 focus:outline-none" />
                   ) : (
                     <code className="bg-gray-100 px-1.5 py-0.5 rounded text-xs">{cat.slug}</code>
                   )}
@@ -141,7 +141,7 @@ export default function AdminCategories() {
                       </>
                     ) : (
                       <>
-                        <button onClick={() => startEdit(cat)} className="p-1.5 rounded text-olx-teal hover:bg-blue-50" title="Edit"><Pencil size={15} /></button>
+                        <button onClick={() => startEdit(cat)} className="p-1.5 rounded text-sellora-primary hover:bg-blue-50" title="Edit"><Pencil size={15} /></button>
                         <button onClick={() => handleDelete(cat.id)} className="p-1.5 rounded text-red-500 hover:bg-red-50" title="Delete"><Trash2 size={15} /></button>
                       </>
                     )}

@@ -40,10 +40,10 @@ export default function MyAdsPage() {
 
   if (loading && myAds.length === 0) {
     return (
-      <div className="bg-olx-bg min-h-screen py-6">
+      <div className="bg-sellora-bg min-h-screen py-6">
         <div className="max-w-4xl mx-auto px-4 space-y-3">
           {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="bg-white border border-olx-border rounded-lg h-28 animate-pulse" />
+            <div key={i} className="bg-white border border-sellora-border rounded-lg h-28 animate-pulse" />
           ))}
         </div>
       </div>
@@ -52,26 +52,26 @@ export default function MyAdsPage() {
 
   return (
     <>
-    <div className="bg-olx-bg min-h-screen py-6">
+    <div className="bg-sellora-bg min-h-screen py-6">
       <div className="max-w-4xl mx-auto px-4">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-xl font-bold text-olx-text">My Ads</h1>
+          <h1 className="text-xl font-bold text-sellora-text">My Ads</h1>
           <button
             onClick={() => navigate('/post-ad')}
-            className="flex items-center gap-1.5 bg-olx-yellow text-olx-teal font-bold px-4 py-2 rounded text-sm hover:bg-olx-yellow-hover"
+            className="flex items-center gap-1.5 btn-gradient font-semibold px-4 py-2 rounded-xl text-sm"
           >
             <Plus size={16} /> Post New Ad
           </button>
         </div>
 
         {myAds.length === 0 ? (
-          <div className="bg-white border border-olx-border rounded-lg text-center py-20 px-4">
+          <div className="bg-white border border-sellora-border rounded-lg text-center py-20 px-4">
             <p className="text-5xl mb-4">📋</p>
-            <p className="text-lg font-semibold text-olx-text">You haven't posted any ads yet</p>
-            <p className="text-olx-muted text-sm mt-1 mb-5">Start selling by posting your first ad</p>
+            <p className="text-lg font-semibold text-sellora-text">You haven't posted any ads yet</p>
+            <p className="text-sellora-muted text-sm mt-1 mb-5">Start selling by posting your first ad</p>
             <Link
               to="/post-ad"
-              className="inline-flex items-center gap-2 bg-olx-yellow text-olx-teal font-bold px-6 py-2.5 rounded hover:bg-olx-yellow-hover"
+              className="inline-flex items-center gap-2 btn-gradient font-semibold px-6 py-2.5 rounded-xl"
             >
               <Plus size={16} /> Post an Ad
             </Link>
@@ -79,7 +79,7 @@ export default function MyAdsPage() {
         ) : (
           <div className="space-y-3">
             {myAds.map((ad) => (
-              <div key={ad.id} className="bg-white border border-olx-border rounded-lg p-4 flex gap-4 items-start hover:shadow-sm transition-shadow">
+              <div key={ad.id} className="bg-white border border-sellora-border rounded-lg p-4 flex gap-4 items-start hover:shadow-sm transition-shadow">
                 {/* Image */}
                 <div className="w-24 h-20 rounded overflow-hidden bg-gray-100 shrink-0 cursor-pointer" onClick={() => navigate(`/ads/${ad.id}`)}>
                   {ad.images?.[0] ? (
@@ -95,10 +95,10 @@ export default function MyAdsPage() {
 
                 {/* Info */}
                 <div className="flex-1 min-w-0">
-                  <Link to={`/ads/${ad.id}`} className="font-semibold text-olx-text hover:text-olx-teal truncate block text-sm">
+                  <Link to={`/ads/${ad.id}`} className="font-semibold text-sellora-text hover:text-sellora-primary truncate block text-sm">
                     {ad.title}
                   </Link>
-                  <p className="text-olx-teal font-bold text-lg mt-0.5">
+                  <p className="text-sellora-primary font-bold text-lg mt-0.5">
                     ₹{Number(ad.price).toLocaleString('en-IN')}
                   </p>
                   <div className="flex flex-wrap items-center gap-2 mt-1.5">
@@ -109,10 +109,10 @@ export default function MyAdsPage() {
                     }`}>
                       {ad.status}
                     </span>
-                    <span className="text-xs text-olx-muted flex items-center gap-0.5">
+                    <span className="text-xs text-sellora-muted flex items-center gap-0.5">
                       <Eye size={11} /> {ad.views} views
                     </span>
-                    {ad.city && <span className="text-xs text-olx-muted">📍 {ad.city}</span>}
+                    {ad.city && <span className="text-xs text-sellora-muted">📍 {ad.city}</span>}
                   </div>
                 </div>
 
@@ -120,7 +120,7 @@ export default function MyAdsPage() {
                 <div className="flex flex-col gap-2 shrink-0">
                   <button
                     onClick={() => navigate(`/edit-ad/${ad.id}`)}
-                    className="text-xs border border-olx-teal text-olx-teal px-3 py-1.5 rounded hover:bg-olx-teal hover:text-white transition-colors flex items-center gap-1"
+                    className="text-xs border border-sellora-primary text-sellora-primary px-3 py-1.5 rounded hover:bg-sellora-primary hover:text-white transition-colors flex items-center gap-1"
                   >
                     <Edit size={12} /> Edit
                   </button>
@@ -132,7 +132,7 @@ export default function MyAdsPage() {
                   </button>
                   <button
                     onClick={() => handleToggleStatus(ad)}
-                    className="text-xs border border-gray-300 text-olx-muted px-3 py-1.5 rounded hover:bg-gray-50 transition-colors flex items-center gap-1"
+                    className="text-xs border border-gray-300 text-sellora-muted px-3 py-1.5 rounded hover:bg-gray-50 transition-colors flex items-center gap-1"
                   >
                     {ad.status === 'active' ? 'Mark Sold' : 'Mark Active'}
                   </button>

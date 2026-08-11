@@ -88,20 +88,20 @@ export default function AdDetailPage() {
   }
 
   if (!currentAd) return (
-    <div className="text-center py-20 text-olx-muted">
+    <div className="text-center py-20 text-sellora-muted">
       <p className="text-5xl mb-4">😕</p>
       <p className="text-lg font-semibold">Ad not found</p>
-      <button onClick={() => navigate('/')} className="mt-4 text-olx-teal font-semibold hover:underline">Go Home</button>
+      <button onClick={() => navigate('/')} className="mt-4 text-sellora-primary font-semibold hover:underline">Go Home</button>
     </div>
   );
 
   const similarAds = ads.filter((a) => a.id !== currentAd.id && a.category?.id === currentAd.category?.id).slice(0, 4);
 
   return (
-    <div className="bg-olx-bg min-h-screen">
+    <div className="bg-sellora-bg min-h-screen">
       <div className="max-w-[1200px] mx-auto px-4 py-4">
         {/* Back */}
-        <button onClick={() => navigate(-1)} className="flex items-center gap-1 text-olx-muted text-sm mb-4 hover:text-olx-teal transition-colors">
+        <button onClick={() => navigate(-1)} className="flex items-center gap-1 text-sellora-muted text-sm mb-4 hover:text-sellora-primary transition-colors">
           <ArrowLeft size={16} /> Back to results
         </button>
 
@@ -109,7 +109,7 @@ export default function AdDetailPage() {
           {/* Left: Images + Description */}
           <div className="md:col-span-2 space-y-4">
             {/* Image Gallery */}
-            <div className="bg-white border border-olx-border rounded-lg overflow-hidden">
+            <div className="bg-white border border-sellora-border rounded-lg overflow-hidden">
               <div className="relative aspect-video bg-gray-100 select-none">
                 {currentAd.images?.length > 0 ? (
                   <img
@@ -145,7 +145,7 @@ export default function AdDetailPage() {
                     <button
                       key={i}
                       onClick={() => setActiveImage(i)}
-                      className={`w-16 h-16 rounded shrink-0 overflow-hidden border-2 transition-colors ${i === activeImage ? 'border-olx-teal' : 'border-transparent'}`}
+                      className={`w-16 h-16 rounded shrink-0 overflow-hidden border-2 transition-colors ${i === activeImage ? 'border-sellora-primary' : 'border-transparent'}`}
                     >
                       <img
                         src={img}
@@ -159,25 +159,25 @@ export default function AdDetailPage() {
             </div>
 
             {/* Price + Title */}
-            <div className="bg-white border border-olx-border rounded-lg p-5">
+            <div className="bg-white border border-sellora-border rounded-lg p-5">
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <p className="text-2xl font-bold text-olx-text">
+                  <p className="text-2xl font-bold text-sellora-text">
                     ₹{Number(currentAd.price).toLocaleString('en-IN')}
                   </p>
-                  <h1 className="text-xl font-semibold text-olx-text mt-1">{currentAd.title}</h1>
+                  <h1 className="text-xl font-semibold text-sellora-text mt-1">{currentAd.title}</h1>
                 </div>
                 <div className="flex gap-2 shrink-0">
-                  <button onClick={handleToggleFav} className="p-2 border border-olx-border rounded-full hover:border-red-300 transition-colors">
+                  <button onClick={handleToggleFav} className="p-2 border border-sellora-border rounded-full hover:border-red-300 transition-colors">
                     <Heart size={18} fill={isFav ? '#ff6b6b' : 'none'} stroke={isFav ? '#ff6b6b' : '#666'} />
                   </button>
-                  <button onClick={handleShare} className="p-2 border border-olx-border rounded-full hover:border-olx-teal transition-colors">
-                    <Share2 size={18} className="text-olx-muted" />
+                  <button onClick={handleShare} className="p-2 border border-sellora-border rounded-full hover:border-sellora-primary transition-colors">
+                    <Share2 size={18} className="text-sellora-muted" />
                   </button>
                 </div>
               </div>
 
-              <div className="flex flex-wrap items-center gap-4 mt-3 text-sm text-olx-muted">
+              <div className="flex flex-wrap items-center gap-4 mt-3 text-sm text-sellora-muted">
                 <span className="flex items-center gap-1">
                   <MapPin size={14} />
                   {[currentAd.city, currentAd.state].filter(Boolean).join(', ')}
@@ -192,7 +192,7 @@ export default function AdDetailPage() {
                 <div className="flex gap-2 mt-3">
                   <Link
                     to={`/search?categorySlug=${currentAd.category.slug}`}
-                    className="text-xs bg-blue-50 text-olx-teal px-3 py-1 rounded-full hover:bg-blue-100 transition-colors"
+                    className="text-xs bg-blue-50 text-sellora-primary px-3 py-1 rounded-full hover:bg-blue-100 transition-colors"
                   >
                     {currentAd.category.name}
                   </Link>
@@ -201,15 +201,15 @@ export default function AdDetailPage() {
             </div>
 
             {/* Description */}
-            <div className="bg-white border border-olx-border rounded-lg p-5">
-              <h2 className="font-bold text-olx-text mb-3">Description</h2>
-              <p className="text-olx-text text-sm whitespace-pre-line leading-relaxed">
+            <div className="bg-white border border-sellora-border rounded-lg p-5">
+              <h2 className="font-bold text-sellora-text mb-3">Description</h2>
+              <p className="text-sellora-text text-sm whitespace-pre-line leading-relaxed">
                 {currentAd.description || 'No description provided.'}
               </p>
             </div>
 
             {/* Report */}
-            <button className="flex items-center gap-2 text-sm text-olx-muted hover:text-red-500 transition-colors">
+            <button className="flex items-center gap-2 text-sm text-sellora-muted hover:text-red-500 transition-colors">
               <Flag size={14} /> Report this ad
             </button>
           </div>
@@ -217,22 +217,22 @@ export default function AdDetailPage() {
           {/* Right: Seller + Actions */}
           <aside className="space-y-4">
             {/* Seller Card */}
-            <div className="bg-white border border-olx-border rounded-lg p-5">
-              <h2 className="font-bold text-olx-text mb-4">Seller details</h2>
+            <div className="bg-white border border-sellora-border rounded-lg p-5">
+              <h2 className="font-bold text-sellora-text mb-4">Seller details</h2>
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 rounded-full bg-olx-teal flex items-center justify-center text-white font-bold text-xl shrink-0">
+                <div className="w-12 h-12 rounded-full bg-sellora-primary flex items-center justify-center text-white font-bold text-xl shrink-0">
                   {currentAd.user?.name?.[0]?.toUpperCase() || '?'}
                 </div>
                 <div>
-                  <p className="font-semibold text-olx-text">{currentAd.user?.name}</p>
-                  <p className="text-olx-muted text-sm">{currentAd.user?.city || 'Location not set'}</p>
+                  <p className="font-semibold text-sellora-text">{currentAd.user?.name}</p>
+                  <p className="text-sellora-muted text-sm">{currentAd.user?.city || 'Location not set'}</p>
                 </div>
               </div>
 
               {/* Phone button */}
               <button
                 onClick={() => { if (!user) { navigate('/login'); return; } setShowPhone(true); }}
-                className="w-full border-2 border-olx-teal text-olx-teal font-bold py-2.5 rounded text-sm hover:bg-olx-teal hover:text-white transition-colors flex items-center justify-center gap-2 mb-3"
+                className="w-full border-2 border-sellora-primary text-sellora-primary font-bold py-2.5 rounded text-sm hover:bg-sellora-primary hover:text-white transition-colors flex items-center justify-center gap-2 mb-3"
               >
                 <Phone size={16} />
                 {showPhone ? (currentAd.user?.phone || 'Phone not provided') : 'Show Phone Number'}
@@ -242,7 +242,7 @@ export default function AdDetailPage() {
               {user?.id !== currentAd.user?.id && (
                 <button
                   onClick={() => { if (!user) { navigate('/login'); return; } setShowMsgModal(true); }}
-                  className="w-full bg-olx-yellow text-olx-teal font-bold py-2.5 rounded text-sm hover:bg-olx-yellow-hover transition-colors flex items-center justify-center gap-2"
+                  className="w-full btn-gradient font-semibold py-2.5 rounded-xl text-sm flex items-center justify-center gap-2"
                 >
                   <MessageSquare size={16} />
                   Chat with Seller
@@ -251,20 +251,20 @@ export default function AdDetailPage() {
             </div>
 
             {/* Posted date & category */}
-            <div className="bg-white border border-olx-border rounded-lg p-4 space-y-3 text-sm">
+            <div className="bg-white border border-sellora-border rounded-lg p-4 space-y-3 text-sm">
               <div className="flex justify-between">
-                <span className="text-olx-muted">Posted</span>
-                <span className="text-olx-text font-medium">{formatDate(currentAd.createdAt)}</span>
+                <span className="text-sellora-muted">Posted</span>
+                <span className="text-sellora-text font-medium">{formatDate(currentAd.createdAt)}</span>
               </div>
               {currentAd.category && (
                 <div className="flex justify-between">
-                  <span className="text-olx-muted">Category</span>
-                  <span className="text-olx-text font-medium">{currentAd.category.name}</span>
+                  <span className="text-sellora-muted">Category</span>
+                  <span className="text-sellora-text font-medium">{currentAd.category.name}</span>
                 </div>
               )}
               <div className="flex justify-between">
-                <span className="text-olx-muted">Ad ID</span>
-                <span className="text-olx-text font-medium">#{currentAd.id}</span>
+                <span className="text-sellora-muted">Ad ID</span>
+                <span className="text-sellora-text font-medium">#{currentAd.id}</span>
               </div>
             </div>
 
@@ -285,10 +285,10 @@ export default function AdDetailPage() {
         {similarAds.length > 0 && (
           <section className="mt-8">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold text-olx-text">Similar Ads</h2>
+              <h2 className="text-xl font-bold text-sellora-text">Similar Ads</h2>
               <Link
                 to={`/search?categorySlug=${currentAd.category?.slug}`}
-                className="text-sm text-olx-teal font-semibold hover:underline"
+                className="text-sm text-sellora-primary font-semibold hover:underline"
               >
                 View more
               </Link>
@@ -304,14 +304,14 @@ export default function AdDetailPage() {
       {showMsgModal && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-2xl">
-            <h3 className="font-bold text-olx-text text-lg mb-1">Message the Seller</h3>
-            <p className="text-olx-muted text-sm mb-4">About: {currentAd.title}</p>
+            <h3 className="font-bold text-sellora-text text-lg mb-1">Message the Seller</h3>
+            <p className="text-sellora-muted text-sm mb-4">About: {currentAd.title}</p>
             <div className="space-y-2 mb-4">
               {['Is this available?', 'What is the lowest price?', 'Can I see it today?'].map((quick) => (
                 <button
                   key={quick}
                   onClick={() => setMsgText(quick)}
-                  className="w-full text-left text-sm border border-olx-border rounded px-3 py-2 hover:border-olx-teal hover:bg-blue-50 transition-colors"
+                  className="w-full text-left text-sm border border-sellora-border rounded px-3 py-2 hover:border-sellora-primary hover:bg-blue-50 transition-colors"
                 >
                   {quick}
                 </button>
@@ -322,19 +322,19 @@ export default function AdDetailPage() {
               onChange={(e) => setMsgText(e.target.value)}
               placeholder="Type your message..."
               rows={3}
-              className="w-full border border-olx-border rounded px-3 py-2 text-sm focus:outline-none focus:border-olx-teal resize-none"
+              className="w-full border border-sellora-border rounded px-3 py-2 text-sm focus:outline-none focus:border-sellora-primary resize-none"
             />
             <div className="flex gap-3 mt-4">
               <button
                 onClick={() => setShowMsgModal(false)}
-                className="flex-1 border border-olx-border text-olx-text py-2 rounded text-sm hover:bg-olx-bg"
+                className="flex-1 border border-sellora-border text-sellora-text py-2 rounded text-sm hover:bg-sellora-bg"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSendMessage}
                 disabled={!msgText.trim() || sendingMsg}
-                className="flex-1 bg-olx-yellow text-olx-teal font-bold py-2 rounded text-sm hover:bg-olx-yellow-hover disabled:opacity-60"
+                className="flex-1 btn-gradient font-semibold py-2 rounded-xl text-sm disabled:opacity-60"
               >
                 {sendingMsg ? 'Sending...' : 'Send Message'}
               </button>

@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import api from '../api/axios';
+import Logo from '../components/Logo';
 
 interface EmailForm {
   email: string;
@@ -53,30 +54,30 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="min-h-[80vh] bg-olx-bg flex items-center justify-center px-4 py-8">
+    <div className="min-h-[80vh] bg-sellora-bg flex items-center justify-center px-4 py-8">
       <div className="w-full max-w-sm">
-        <div className="text-center mb-6">
-          <div className="inline-block bg-olx-teal text-white font-black text-3xl px-4 py-2 rounded-md mb-2">
-            OL<span className="text-olx-yellow">X</span>
+        <div className="mb-6">
+          <div className="flex justify-center mb-2">
+            <Logo className="h-10" />
           </div>
-          <p className="text-olx-muted text-sm">India's #1 Buy &amp; Sell Platform</p>
+          <p className="text-sellora-muted text-sm text-center">Buy, sell &amp; discover near you</p>
         </div>
 
-        <div className="bg-white border border-olx-border rounded-lg p-6 shadow-sm">
+        <div className="bg-white border border-sellora-border rounded-2xl p-6 shadow-sellora">
           {step === 'email' ? (
             <>
-              <h1 className="text-xl font-bold text-olx-text mb-1">Forgot password?</h1>
-              <p className="text-sm text-olx-muted mb-5">
+              <h1 className="text-xl font-bold text-sellora-text mb-1">Forgot password?</h1>
+              <p className="text-sm text-sellora-muted mb-5">
                 Enter your email and we'll send a 6-digit OTP.
               </p>
               <form onSubmit={emailForm.handleSubmit(onSendOtp)} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-semibold text-olx-text mb-1">Email</label>
+                  <label className="block text-sm font-semibold text-sellora-text mb-1">Email</label>
                   <input
                     type="email"
                     {...emailForm.register('email', { required: 'Email is required' })}
                     placeholder="Enter your registered email"
-                    className="w-full border border-olx-border rounded px-4 py-2.5 text-sm focus:outline-none focus:border-olx-teal"
+                    className="w-full border border-sellora-border rounded px-4 py-2.5 text-sm focus:outline-none focus:border-sellora-primary"
                   />
                   {emailForm.formState.errors.email && (
                     <p className="text-red-500 text-xs mt-1">{emailForm.formState.errors.email.message}</p>
@@ -85,7 +86,7 @@ export default function ForgotPasswordPage() {
                 <button
                   type="submit"
                   disabled={emailForm.formState.isSubmitting}
-                  className="w-full bg-olx-yellow text-olx-teal font-bold py-3 rounded hover:bg-olx-yellow-hover transition-colors disabled:opacity-60"
+                  className="w-full btn-gradient font-semibold py-3 rounded-xl disabled:opacity-60"
                 >
                   {emailForm.formState.isSubmitting ? 'Sending OTP...' : 'Send OTP'}
                 </button>
@@ -93,14 +94,14 @@ export default function ForgotPasswordPage() {
             </>
           ) : (
             <>
-              <h1 className="text-xl font-bold text-olx-text mb-1">Enter OTP</h1>
-              <p className="text-sm text-olx-muted mb-5">
-                We sent a 6-digit OTP to <span className="font-semibold text-olx-text">{email}</span>.
+              <h1 className="text-xl font-bold text-sellora-text mb-1">Enter OTP</h1>
+              <p className="text-sm text-sellora-muted mb-5">
+                We sent a 6-digit OTP to <span className="font-semibold text-sellora-text">{email}</span>.
                 It expires in 15 minutes.
               </p>
               <form onSubmit={resetForm.handleSubmit(onResetPassword)} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-semibold text-olx-text mb-1">OTP</label>
+                  <label className="block text-sm font-semibold text-sellora-text mb-1">OTP</label>
                   <input
                     type="text"
                     inputMode="numeric"
@@ -110,14 +111,14 @@ export default function ForgotPasswordPage() {
                       pattern: { value: /^\d{6}$/, message: 'Enter the 6-digit OTP' },
                     })}
                     placeholder="6-digit OTP"
-                    className="w-full border border-olx-border rounded px-4 py-2.5 text-sm tracking-widest text-center focus:outline-none focus:border-olx-teal"
+                    className="w-full border border-sellora-border rounded px-4 py-2.5 text-sm tracking-widest text-center focus:outline-none focus:border-sellora-primary"
                   />
                   {resetForm.formState.errors.otp && (
                     <p className="text-red-500 text-xs mt-1">{resetForm.formState.errors.otp.message}</p>
                   )}
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-olx-text mb-1">New Password</label>
+                  <label className="block text-sm font-semibold text-sellora-text mb-1">New Password</label>
                   <input
                     type="password"
                     {...resetForm.register('newPassword', {
@@ -125,19 +126,19 @@ export default function ForgotPasswordPage() {
                       minLength: { value: 6, message: 'Minimum 6 characters' },
                     })}
                     placeholder="New password"
-                    className="w-full border border-olx-border rounded px-4 py-2.5 text-sm focus:outline-none focus:border-olx-teal"
+                    className="w-full border border-sellora-border rounded px-4 py-2.5 text-sm focus:outline-none focus:border-sellora-primary"
                   />
                   {resetForm.formState.errors.newPassword && (
                     <p className="text-red-500 text-xs mt-1">{resetForm.formState.errors.newPassword.message}</p>
                   )}
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-olx-text mb-1">Confirm Password</label>
+                  <label className="block text-sm font-semibold text-sellora-text mb-1">Confirm Password</label>
                   <input
                     type="password"
                     {...resetForm.register('confirmPassword', { required: 'Please confirm your password' })}
                     placeholder="Confirm new password"
-                    className="w-full border border-olx-border rounded px-4 py-2.5 text-sm focus:outline-none focus:border-olx-teal"
+                    className="w-full border border-sellora-border rounded px-4 py-2.5 text-sm focus:outline-none focus:border-sellora-primary"
                   />
                   {resetForm.formState.errors.confirmPassword && (
                     <p className="text-red-500 text-xs mt-1">{resetForm.formState.errors.confirmPassword.message}</p>
@@ -146,14 +147,14 @@ export default function ForgotPasswordPage() {
                 <button
                   type="submit"
                   disabled={resetForm.formState.isSubmitting}
-                  className="w-full bg-olx-yellow text-olx-teal font-bold py-3 rounded hover:bg-olx-yellow-hover transition-colors disabled:opacity-60"
+                  className="w-full btn-gradient font-semibold py-3 rounded-xl disabled:opacity-60"
                 >
                   {resetForm.formState.isSubmitting ? 'Resetting...' : 'Reset Password'}
                 </button>
                 <button
                   type="button"
                   onClick={() => setStep('email')}
-                  className="w-full text-sm text-olx-teal hover:underline"
+                  className="w-full text-sm text-sellora-primary hover:underline"
                 >
                   Didn't receive OTP? Try again
                 </button>
@@ -161,8 +162,8 @@ export default function ForgotPasswordPage() {
             </>
           )}
 
-          <p className="text-center text-sm text-olx-muted mt-5">
-            <Link to="/login" className="text-olx-teal font-semibold hover:underline">
+          <p className="text-center text-sm text-sellora-muted mt-5">
+            <Link to="/login" className="text-sellora-primary font-semibold hover:underline">
               Back to Log In
             </Link>
           </p>

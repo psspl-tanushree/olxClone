@@ -48,7 +48,7 @@ export default function AdminDashboard() {
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard label="Total Users"    value={stats?.totalUsers}    icon={Users}       color="bg-blue-500" />
-        <StatCard label="Total Ads"      value={stats?.totalAds}      icon={ShoppingBag} color="bg-olx-teal" />
+        <StatCard label="Total Ads"      value={stats?.totalAds}      icon={ShoppingBag} color="bg-sellora-primary" />
         <StatCard label="Active Ads"     value={stats?.activeAds}     icon={TrendingUp}  color="bg-green-500" />
         <StatCard label="Revenue (₹)"   value={Math.round((stats?.revenue || 0) / 100)} icon={CreditCard} color="bg-yellow-500" />
       </div>
@@ -84,7 +84,7 @@ export default function AdminDashboard() {
           <div className="space-y-3">
             {stats?.recentUsers.map((u) => (
               <div key={u.id} className="flex items-center gap-3 text-sm">
-                <div className="w-9 h-9 rounded-full bg-olx-teal flex items-center justify-center text-white font-bold shrink-0">
+                <div className="w-9 h-9 rounded-full bg-sellora-primary flex items-center justify-center text-white font-bold shrink-0">
                   {u.name?.[0]?.toUpperCase()}
                 </div>
                 <div className="flex-1 min-w-0">

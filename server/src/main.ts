@@ -14,8 +14,8 @@ async function bootstrap() {
   app.enableCors({ origin: 'http://localhost:5173', credentials: true });
 
   const config = new DocumentBuilder()
-    .setTitle('OLX Clone API')
-    .setDescription('REST API for OLX Clone portal')
+    .setTitle('Sellora API')
+    .setDescription('REST API for the Sellora marketplace portal')
     .setVersion('1.0')
     .addBearerAuth()
     .build();

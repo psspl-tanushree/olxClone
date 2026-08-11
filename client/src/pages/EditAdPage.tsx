@@ -116,10 +116,10 @@ export default function EditAdPage() {
 
   if (loading && !currentAd) {
     return (
-      <div className="bg-olx-bg min-h-screen py-6">
+      <div className="bg-sellora-bg min-h-screen py-6">
         <div className="max-w-2xl mx-auto px-4 space-y-4">
           {Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className="bg-white border border-olx-border rounded-lg h-14 animate-pulse" />
+            <div key={i} className="bg-white border border-sellora-border rounded-lg h-14 animate-pulse" />
           ))}
         </div>
       </div>
@@ -129,21 +129,21 @@ export default function EditAdPage() {
   const totalImages = existingImages.length + newFiles.length;
 
   return (
-    <div className="bg-olx-bg min-h-screen py-6">
+    <div className="bg-sellora-bg min-h-screen py-6">
       <div className="max-w-2xl mx-auto px-4">
         <button
           onClick={() => navigate('/my-ads')}
-          className="flex items-center gap-2 text-sm text-olx-muted hover:text-olx-teal mb-4 transition-colors"
+          className="flex items-center gap-2 text-sm text-sellora-muted hover:text-sellora-primary mb-4 transition-colors"
         >
           <ArrowLeft size={16} /> Back to My Ads
         </button>
 
-        <div className="bg-white border border-olx-border rounded-lg p-6 space-y-5">
-          <h1 className="text-xl font-bold text-olx-text">Edit Ad</h1>
+        <div className="bg-white border border-sellora-border rounded-lg p-6 space-y-5">
+          <h1 className="text-xl font-bold text-sellora-text">Edit Ad</h1>
 
           {/* Title */}
           <div>
-            <label className="block text-sm font-semibold text-olx-text mb-1">
+            <label className="block text-sm font-semibold text-sellora-text mb-1">
               Ad Title <span className="text-red-500">*</span>
             </label>
             <input
@@ -151,20 +151,20 @@ export default function EditAdPage() {
               onChange={(e) => setTitle(e.target.value)}
               maxLength={70}
               placeholder="e.g. iPhone 13 Pro Max 256GB"
-              className="w-full border border-olx-border rounded px-4 py-2.5 text-sm focus:outline-none focus:border-olx-teal"
+              className="w-full border border-sellora-border rounded px-4 py-2.5 text-sm focus:outline-none focus:border-sellora-primary"
             />
-            <p className="text-xs text-olx-muted text-right mt-0.5">{title.length}/70</p>
+            <p className="text-xs text-sellora-muted text-right mt-0.5">{title.length}/70</p>
           </div>
 
           {/* Category */}
           <div>
-            <label className="block text-sm font-semibold text-olx-text mb-1">
+            <label className="block text-sm font-semibold text-sellora-text mb-1">
               Category <span className="text-red-500">*</span>
             </label>
             <select
               value={categoryId}
               onChange={(e) => setCategoryId(Number(e.target.value))}
-              className="w-full border border-olx-border rounded px-4 py-2.5 text-sm focus:outline-none focus:border-olx-teal"
+              className="w-full border border-sellora-border rounded px-4 py-2.5 text-sm focus:outline-none focus:border-sellora-primary"
             >
               <option value="">Select category</option>
               {categories.map((c) => (
@@ -175,32 +175,32 @@ export default function EditAdPage() {
 
           {/* Description */}
           <div>
-            <label className="block text-sm font-semibold text-olx-text mb-1">Description</label>
+            <label className="block text-sm font-semibold text-sellora-text mb-1">Description</label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               maxLength={4096}
               rows={5}
               placeholder="Include condition, features, reason for selling..."
-              className="w-full border border-olx-border rounded px-4 py-2.5 text-sm focus:outline-none focus:border-olx-teal resize-none"
+              className="w-full border border-sellora-border rounded px-4 py-2.5 text-sm focus:outline-none focus:border-sellora-primary resize-none"
             />
-            <p className="text-xs text-olx-muted text-right mt-0.5">{description.length}/4096</p>
+            <p className="text-xs text-sellora-muted text-right mt-0.5">{description.length}/4096</p>
           </div>
 
           {/* Price */}
           <div>
-            <label className="block text-sm font-semibold text-olx-text mb-1">
+            <label className="block text-sm font-semibold text-sellora-text mb-1">
               Price (₹) <span className="text-red-500">*</span>
             </label>
             <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-olx-muted font-semibold">₹</span>
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sellora-muted font-semibold">₹</span>
               <input
                 type="number"
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
                 min={0}
                 placeholder="0"
-                className="w-full border border-olx-border rounded pl-8 pr-4 py-2.5 text-sm focus:outline-none focus:border-olx-teal"
+                className="w-full border border-sellora-border rounded pl-8 pr-4 py-2.5 text-sm focus:outline-none focus:border-sellora-primary"
               />
             </div>
           </div>
@@ -208,20 +208,20 @@ export default function EditAdPage() {
           {/* Location */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-semibold text-olx-text mb-1">City</label>
+              <label className="block text-sm font-semibold text-sellora-text mb-1">City</label>
               <input
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
                 placeholder="e.g. Mumbai"
-                className="w-full border border-olx-border rounded px-4 py-2.5 text-sm focus:outline-none focus:border-olx-teal"
+                className="w-full border border-sellora-border rounded px-4 py-2.5 text-sm focus:outline-none focus:border-sellora-primary"
               />
             </div>
             <div>
-              <label className="block text-sm font-semibold text-olx-text mb-1">State</label>
+              <label className="block text-sm font-semibold text-sellora-text mb-1">State</label>
               <select
                 value={adState}
                 onChange={(e) => setAdState(e.target.value)}
-                className="w-full border border-olx-border rounded px-4 py-2.5 text-sm focus:outline-none focus:border-olx-teal"
+                className="w-full border border-sellora-border rounded px-4 py-2.5 text-sm focus:outline-none focus:border-sellora-primary"
               >
                 <option value="">Select state</option>
                 {INDIAN_STATES.map((s) => <option key={s} value={s}>{s}</option>)}
@@ -231,13 +231,13 @@ export default function EditAdPage() {
 
           {/* Photos */}
           <div>
-            <label className="block text-sm font-semibold text-olx-text mb-2">
-              Photos <span className="text-olx-muted font-normal">(up to 5)</span>
+            <label className="block text-sm font-semibold text-sellora-text mb-2">
+              Photos <span className="text-sellora-muted font-normal">(up to 5)</span>
             </label>
             <div className="flex flex-wrap gap-2">
               {/* Existing images */}
               {existingImages.map((src, i) => (
-                <div key={`existing-${i}`} className="relative w-20 h-20 rounded overflow-hidden border border-olx-border">
+                <div key={`existing-${i}`} className="relative w-20 h-20 rounded overflow-hidden border border-sellora-border">
                   <img
                     src={src.startsWith('http') ? src : `${import.meta.env.VITE_API_URL}${src}`}
                     alt=""
@@ -256,7 +256,7 @@ export default function EditAdPage() {
               ))}
               {/* New image previews */}
               {newPreviews.map((src, i) => (
-                <div key={`new-${i}`} className="relative w-20 h-20 rounded overflow-hidden border border-olx-teal">
+                <div key={`new-${i}`} className="relative w-20 h-20 rounded overflow-hidden border border-sellora-primary">
                   <img src={src} alt="" className="w-full h-full object-cover" />
                   <button
                     onClick={() => removeNew(i)}
@@ -264,14 +264,14 @@ export default function EditAdPage() {
                   >
                     <X size={10} />
                   </button>
-                  <span className="absolute bottom-0 left-0 right-0 bg-olx-teal/70 text-white text-[9px] text-center py-0.5">New</span>
+                  <span className="absolute bottom-0 left-0 right-0 bg-sellora-primary/70 text-white text-[9px] text-center py-0.5">New</span>
                 </div>
               ))}
               {/* Add more button */}
               {totalImages < 5 && (
-                <label className="w-20 h-20 border-2 border-dashed border-olx-border rounded flex flex-col items-center justify-center cursor-pointer hover:border-olx-teal transition-colors">
-                  <Upload size={20} className="text-olx-muted" />
-                  <span className="text-xs text-olx-muted mt-1">Add</span>
+                <label className="w-20 h-20 border-2 border-dashed border-sellora-border rounded flex flex-col items-center justify-center cursor-pointer hover:border-sellora-primary transition-colors">
+                  <Upload size={20} className="text-sellora-muted" />
+                  <span className="text-xs text-sellora-muted mt-1">Add</span>
                   <input type="file" accept="image/*" multiple className="hidden" onChange={handleFileChange} />
                 </label>
               )}
@@ -282,14 +282,14 @@ export default function EditAdPage() {
           <div className="flex gap-3 pt-2">
             <button
               onClick={() => navigate('/my-ads')}
-              className="flex-1 border border-olx-border text-olx-text font-semibold py-3 rounded hover:bg-olx-bg transition-colors text-sm"
+              className="flex-1 border border-sellora-border text-sellora-text font-semibold py-3 rounded hover:bg-sellora-bg transition-colors text-sm"
             >
               Cancel
             </button>
             <button
               onClick={handleSubmit}
               disabled={submitting}
-              className="flex-1 bg-olx-yellow text-olx-teal font-bold py-3 rounded hover:bg-olx-yellow-hover transition-colors disabled:opacity-60 text-sm"
+              className="flex-1 btn-gradient font-semibold py-3 rounded-xl disabled:opacity-60 text-sm"
             >
               {submitting ? 'Saving...' : 'Save Changes'}
             </button>

@@ -1,6 +1,6 @@
-# OLX Clone
+# Sellora
 
-A full-stack web portal replicating core OLX India (olx.in) functionality. This project allows users to buy and sell items locally through a classifieds platform with features like user authentication, ad posting, searching, and messaging.
+Sellora is a full-stack marketplace web portal. It lets users buy and sell items locally through a classifieds platform, with user authentication, ad posting, searching, filtering and buyer–seller messaging.
 
 ## 🚀 Tech Stack
 
@@ -38,7 +38,7 @@ A full-stack web portal replicating core OLX India (olx.in) functionality. This 
 
 5. **UI/UX**
    - Responsive mobile-first design
-   - OLX-inspired interface
+   - Modern, colourful marketplace interface
 
 ### Categories Supported
 - Cars
@@ -64,7 +64,7 @@ Before running this application, make sure you have the following installed:
 1. **Clone the repository:**
    ```bash
    git clone <repository-url>
-   cd olx-clone
+   cd olxClone
    ```
 
 2. **Install dependencies:**
@@ -124,7 +124,7 @@ npm run build
 ## 📁 Project Structure
 
 ```
-olx-clone/
+sellora/
 ├── client/                  # React frontend (Vite)
 │   ├── src/
 │   │   ├── components/      # Reusable UI components
@@ -188,5 +188,4 @@ This project is for educational purposes as part of the PSSPL AI Acceleration Mo
 
 ## 🙏 Acknowledgments
 
-- OLX India for the inspiration
 - PSSPL AI Acceleration Month program

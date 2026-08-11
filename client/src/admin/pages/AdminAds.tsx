@@ -65,18 +65,18 @@ export default function AdminAds() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search by title..."
-          className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-olx-teal w-64"
+          className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-sellora-primary w-64"
         />
         <select
           value={status}
           onChange={(e) => { setStatus(e.target.value); setPage(1); load(1, search, e.target.value); }}
-          className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-olx-teal"
+          className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-sellora-primary"
         >
           {STATUS_OPTIONS.map((s) => (
             <option key={s} value={s}>{s || 'All Status'}</option>
           ))}
         </select>
-        <button type="submit" className="bg-olx-teal text-white px-4 py-2 rounded-lg hover:opacity-90 flex items-center gap-1">
+        <button type="submit" className="bg-sellora-primary text-white px-4 py-2 rounded-lg hover:opacity-90 flex items-center gap-1">
           <Search size={15} /> Search
         </button>
       </form>
@@ -110,7 +110,7 @@ export default function AdminAds() {
                   </div>
                 </td>
                 <td className="px-4 py-3 text-gray-500">{ad.user?.name || '—'}</td>
-                <td className="px-4 py-3 font-semibold text-olx-teal">₹{Number(ad.price).toLocaleString('en-IN')}</td>
+                <td className="px-4 py-3 font-semibold text-sellora-primary">₹{Number(ad.price).toLocaleString('en-IN')}</td>
                 <td className="px-4 py-3 text-gray-500">{ad.city || '—'}</td>
                 <td className="px-4 py-3">
                   <select
@@ -127,7 +127,7 @@ export default function AdminAds() {
                   <div className="flex items-center gap-1">
                     <button
                       onClick={() => navigate(`/ads/${ad.id}`)}
-                      className="p-1.5 rounded text-olx-teal hover:bg-blue-50 transition-colors"
+                      className="p-1.5 rounded text-sellora-primary hover:bg-blue-50 transition-colors"
                       title="View"
                     >
                       <Eye size={15} />

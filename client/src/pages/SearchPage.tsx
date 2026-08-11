@@ -20,7 +20,7 @@ const INDIAN_CITIES = [
 
 function SkeletonCard() {
   return (
-    <div className="bg-white border border-olx-border rounded overflow-hidden animate-pulse">
+    <div className="bg-white border border-sellora-border rounded overflow-hidden animate-pulse">
       <div className="aspect-[4/3] bg-gray-200" />
       <div className="p-2.5 space-y-2">
         <div className="h-4 bg-gray-200 rounded w-2/3" />
@@ -85,12 +85,12 @@ export default function SearchPage() {
   });
 
   return (
-    <div className="bg-olx-bg min-h-screen">
+    <div className="bg-sellora-bg min-h-screen">
       <div className="max-w-[1200px] mx-auto px-4 py-4">
         {/* Breadcrumb + results count */}
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-lg font-bold text-olx-text">
+            <h1 className="text-lg font-bold text-sellora-text">
               {loading
                 ? 'Searching...'
                 : search
@@ -100,7 +100,7 @@ export default function SearchPage() {
                 : 'All Ads'}
             </h1>
             {!loading && (
-              <p className="text-sm text-olx-muted">{total} results</p>
+              <p className="text-sm text-sellora-muted">{total} results</p>
             )}
           </div>
 
@@ -110,26 +110,26 @@ export default function SearchPage() {
               <select
                 value={sort}
                 onChange={(e) => setSort(e.target.value)}
-                className="appearance-none bg-white border border-olx-border rounded px-3 py-1.5 text-sm text-olx-text pr-7 focus:outline-none cursor-pointer"
+                className="appearance-none bg-white border border-sellora-border rounded px-3 py-1.5 text-sm text-sellora-text pr-7 focus:outline-none cursor-pointer"
               >
                 {SORT_OPTIONS.map((o) => (
                   <option key={o.value} value={o.value}>{o.label}</option>
                 ))}
               </select>
-              <ChevronDown size={14} className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-olx-muted" />
+              <ChevronDown size={14} className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-sellora-muted" />
             </div>
 
             {/* View mode */}
-            <div className="flex border border-olx-border rounded overflow-hidden bg-white">
+            <div className="flex border border-sellora-border rounded overflow-hidden bg-white">
               <button
                 onClick={() => setViewMode('grid')}
-                className={`p-1.5 ${viewMode === 'grid' ? 'bg-olx-teal text-white' : 'text-olx-muted hover:bg-olx-bg'}`}
+                className={`p-1.5 ${viewMode === 'grid' ? 'bg-sellora-primary text-white' : 'text-sellora-muted hover:bg-sellora-bg'}`}
               >
                 <Grid size={16} />
               </button>
               <button
                 onClick={() => setViewMode('list')}
-                className={`p-1.5 ${viewMode === 'list' ? 'bg-olx-teal text-white' : 'text-olx-muted hover:bg-olx-bg'}`}
+                className={`p-1.5 ${viewMode === 'list' ? 'bg-sellora-primary text-white' : 'text-sellora-muted hover:bg-sellora-bg'}`}
               >
                 <List size={16} />
               </button>
@@ -138,7 +138,7 @@ export default function SearchPage() {
             {/* Mobile filter toggle */}
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className="md:hidden flex items-center gap-1 bg-white border border-olx-border rounded px-3 py-1.5 text-sm text-olx-text"
+              className="md:hidden flex items-center gap-1 bg-white border border-sellora-border rounded px-3 py-1.5 text-sm text-sellora-text"
             >
               <SlidersHorizontal size={14} /> Filters
             </button>
@@ -158,12 +158,12 @@ export default function SearchPage() {
             )}
 
             {/* Categories */}
-            <div className="bg-white border border-olx-border rounded p-4">
-              <h3 className="font-bold text-olx-text text-sm mb-3">All Categories</h3>
+            <div className="bg-white border border-sellora-border rounded p-4">
+              <h3 className="font-bold text-sellora-text text-sm mb-3">All Categories</h3>
               <div className="space-y-1">
                 <button
                   onClick={() => updateFilter('categorySlug', '')}
-                  className={`w-full text-left text-sm py-1 px-2 rounded transition-colors ${!categorySlug ? 'text-olx-teal font-semibold bg-blue-50' : 'text-olx-text hover:bg-olx-bg'}`}
+                  className={`w-full text-left text-sm py-1 px-2 rounded transition-colors ${!categorySlug ? 'text-sellora-primary font-semibold bg-blue-50' : 'text-sellora-text hover:bg-sellora-bg'}`}
                 >
                   All Categories
                 </button>
@@ -171,7 +171,7 @@ export default function SearchPage() {
                   <button
                     key={c.id}
                     onClick={() => updateFilter('categorySlug', c.slug)}
-                    className={`w-full text-left text-sm py-1 px-2 rounded transition-colors ${categorySlug === c.slug ? 'text-olx-teal font-semibold bg-blue-50' : 'text-olx-text hover:bg-olx-bg'}`}
+                    className={`w-full text-left text-sm py-1 px-2 rounded transition-colors ${categorySlug === c.slug ? 'text-sellora-primary font-semibold bg-blue-50' : 'text-sellora-text hover:bg-sellora-bg'}`}
                   >
                     {c.name}
                   </button>
@@ -180,8 +180,8 @@ export default function SearchPage() {
             </div>
 
             {/* Location */}
-            <div className="bg-white border border-olx-border rounded p-4">
-              <h3 className="font-bold text-olx-text text-sm mb-3">Location</h3>
+            <div className="bg-white border border-sellora-border rounded p-4">
+              <h3 className="font-bold text-sellora-text text-sm mb-3">Location</h3>
               <div className="space-y-1">
                 {INDIAN_CITIES.map((c) => (
                   <button
@@ -189,8 +189,8 @@ export default function SearchPage() {
                     onClick={() => updateFilter('city', c === 'All Cities' ? '' : c)}
                     className={`w-full text-left text-sm py-1 px-2 rounded transition-colors ${
                       (city === c || (c === 'All Cities' && !city))
-                        ? 'text-olx-teal font-semibold bg-blue-50'
-                        : 'text-olx-text hover:bg-olx-bg'
+                        ? 'text-sellora-primary font-semibold bg-blue-50'
+                        : 'text-sellora-text hover:bg-sellora-bg'
                     }`}
                   >
                     {c}
@@ -200,26 +200,26 @@ export default function SearchPage() {
             </div>
 
             {/* Price Range */}
-            <div className="bg-white border border-olx-border rounded p-4">
-              <h3 className="font-bold text-olx-text text-sm mb-3">Price Range</h3>
+            <div className="bg-white border border-sellora-border rounded p-4">
+              <h3 className="font-bold text-sellora-text text-sm mb-3">Price Range</h3>
               <div className="space-y-2">
                 <input
                   type="number"
                   placeholder="Min ₹"
                   value={minPrice}
                   onChange={(e) => setMinPrice(e.target.value)}
-                  className="w-full border border-olx-border rounded px-3 py-1.5 text-sm focus:outline-none focus:border-olx-teal"
+                  className="w-full border border-sellora-border rounded px-3 py-1.5 text-sm focus:outline-none focus:border-sellora-primary"
                 />
                 <input
                   type="number"
                   placeholder="Max ₹"
                   value={maxPrice}
                   onChange={(e) => setMaxPrice(e.target.value)}
-                  className="w-full border border-olx-border rounded px-3 py-1.5 text-sm focus:outline-none focus:border-olx-teal"
+                  className="w-full border border-sellora-border rounded px-3 py-1.5 text-sm focus:outline-none focus:border-sellora-primary"
                 />
                 <button
                   onClick={() => {}}
-                  className="w-full bg-olx-teal text-white text-sm py-1.5 rounded hover:bg-olx-teal-hover transition-colors"
+                  className="w-full bg-sellora-primary text-white text-sm py-1.5 rounded hover:bg-sellora-primary-dark transition-colors"
                 >
                   Apply
                 </button>
@@ -237,17 +237,17 @@ export default function SearchPage() {
                 {Array.from({ length: 9 }).map((_, i) => (
                   viewMode === 'grid'
                     ? <SkeletonCard key={i} />
-                    : <div key={i} className="bg-white border border-olx-border rounded h-28 animate-pulse" />
+                    : <div key={i} className="bg-white border border-sellora-border rounded h-28 animate-pulse" />
                 ))}
               </div>
             ) : sortedAds.length === 0 ? (
-              <div className="text-center py-20 bg-white border border-olx-border rounded-lg">
+              <div className="text-center py-20 bg-white border border-sellora-border rounded-lg">
                 <p className="text-5xl mb-4">🔍</p>
-                <p className="text-olx-text font-semibold text-lg">No results found</p>
-                <p className="text-olx-muted text-sm mt-1">Try adjusting your search or filters</p>
+                <p className="text-sellora-text font-semibold text-lg">No results found</p>
+                <p className="text-sellora-muted text-sm mt-1">Try adjusting your search or filters</p>
                 <button
                   onClick={clearAllFilters}
-                  className="mt-4 text-olx-teal text-sm font-semibold hover:underline"
+                  className="mt-4 text-sellora-primary text-sm font-semibold hover:underline"
                 >
                   Clear all filters
                 </button>
@@ -261,7 +261,7 @@ export default function SearchPage() {
                 {sortedAds.map((ad) => (
                   <div
                     key={ad.id}
-                    className="bg-white border border-olx-border rounded overflow-hidden flex gap-3 p-3 hover:shadow-md transition-shadow cursor-pointer"
+                    className="bg-white border border-sellora-border rounded overflow-hidden flex gap-3 p-3 hover:shadow-md transition-shadow cursor-pointer"
                     onClick={() => navigate(`/ads/${ad.id}`)}
                   >
                     <div className="w-32 h-24 shrink-0 rounded overflow-hidden bg-gray-100">
@@ -276,9 +276,9 @@ export default function SearchPage() {
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="font-bold text-olx-text text-lg">₹{Number(ad.price).toLocaleString('en-IN')}</p>
-                      <p className="text-olx-text text-sm mt-0.5 line-clamp-1">{ad.title}</p>
-                      <p className="text-olx-muted text-xs mt-1">{[ad.city, ad.state].filter(Boolean).join(', ')}</p>
+                      <p className="font-bold text-sellora-text text-lg">₹{Number(ad.price).toLocaleString('en-IN')}</p>
+                      <p className="text-sellora-text text-sm mt-0.5 line-clamp-1">{ad.title}</p>
+                      <p className="text-sellora-muted text-xs mt-1">{[ad.city, ad.state].filter(Boolean).join(', ')}</p>
                     </div>
                   </div>
                 ))}
