@@ -16,7 +16,7 @@ const PLANS = [
     label: '7 Days Boost',
     price: 99,
     days: 7,
-    icon: <Zap size={20} className="text-olx-teal" />,
+    icon: <Zap size={20} className="text-sellora-primary" />,
     perks: ['Appear at the top of listings', '3× more visibility', 'Featured badge on your ad'],
   },
   {
@@ -61,10 +61,10 @@ export default function PromoteModal({ adId, adTitle, onClose, onSuccess }: Prop
         key:         data.keyId,
         amount:      data.amount,
         currency:    'INR',
-        name:        'OLX Clone',
+        name:        'Sellora',
         description: `${plan.label} for "${adTitle}"`,
         order_id:    data.orderId,
-        theme:       { color: '#002f34' },
+        theme:       { color: '#4F46E5' },
         handler: async (response: any) => {
           try {
             await api.post('/payments/verify', {
@@ -95,12 +95,12 @@ export default function PromoteModal({ adId, adTitle, onClose, onSuccess }: Prop
       <div className="relative bg-white rounded-xl shadow-2xl w-full max-w-md p-6 z-10">
         {/* Header */}
         <div className="flex items-center justify-between mb-1">
-          <h2 className="text-lg font-bold text-olx-text">Promote Your Ad</h2>
-          <button onClick={onClose} className="text-olx-muted hover:text-olx-text">
+          <h2 className="text-lg font-bold text-sellora-text">Promote Your Ad</h2>
+          <button onClick={onClose} className="text-sellora-muted hover:text-sellora-text">
             <X size={20} />
           </button>
         </div>
-        <p className="text-sm text-olx-muted mb-5 truncate">"{adTitle}"</p>
+        <p className="text-sm text-sellora-muted mb-5 truncate">"{adTitle}"</p>
 
         {/* Plans */}
         <div className="space-y-3 mb-6">
@@ -110,27 +110,27 @@ export default function PromoteModal({ adId, adTitle, onClose, onSuccess }: Prop
               onClick={() => setSelectedPlan(plan.key)}
               className={`w-full text-left border-2 rounded-xl p-4 transition-all relative ${
                 selectedPlan === plan.key
-                  ? 'border-olx-teal bg-blue-50'
-                  : 'border-olx-border hover:border-olx-teal/50'
+                  ? 'border-sellora-primary bg-blue-50'
+                  : 'border-sellora-border hover:border-sellora-primary/50'
               }`}
             >
               {plan.popular && (
-                <span className="absolute -top-2.5 left-4 bg-olx-yellow text-olx-teal text-[10px] font-bold px-2 py-0.5 rounded-full">
+                <span className="absolute -top-2.5 left-4 bg-sellora-warm text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
                   POPULAR
                 </span>
               )}
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
                   {plan.icon}
-                  <span className="font-bold text-olx-text">{plan.label}</span>
+                  <span className="font-bold text-sellora-text">{plan.label}</span>
                 </div>
                 <div className="text-right">
-                  <span className="text-xl font-black text-olx-teal">₹{plan.price}</span>
+                  <span className="text-xl font-black text-sellora-primary">₹{plan.price}</span>
                 </div>
               </div>
               <ul className="space-y-1">
                 {plan.perks.map((p) => (
-                  <li key={p} className="text-xs text-olx-muted flex items-center gap-1.5">
+                  <li key={p} className="text-xs text-sellora-muted flex items-center gap-1.5">
                     <span className="text-green-500 font-bold">✓</span> {p}
                   </li>
                 ))}
@@ -143,13 +143,13 @@ export default function PromoteModal({ adId, adTitle, onClose, onSuccess }: Prop
         <button
           onClick={handlePay}
           disabled={loading}
-          className="w-full bg-olx-yellow text-olx-teal font-bold py-3 rounded-lg hover:bg-olx-yellow-hover transition-colors disabled:opacity-60 text-sm"
+          className="w-full btn-gradient font-semibold py-3 rounded-lg disabled:opacity-60 text-sm"
         >
           {loading
             ? 'Opening payment...'
             : `Pay ₹${PLANS.find((p) => p.key === selectedPlan)?.price} with Razorpay`}
         </button>
-        <p className="text-center text-xs text-olx-muted mt-3">
+        <p className="text-center text-xs text-sellora-muted mt-3">
           Secured by Razorpay · UPI / Cards / Netbanking accepted
         </p>
       </div>

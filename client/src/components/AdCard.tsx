@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Heart } from 'lucide-react';
+import { Heart, MapPin } from 'lucide-react';
 
 interface Ad {
   id: number;
@@ -36,19 +36,23 @@ export default function AdCard({ ad, onToggleFavourite, isFavourited }: Props) {
     ? (ad.images[0].startsWith('http') ? ad.images[0] : ad.images[0])
     : null;
 
+  const location = [ad.city, ad.state].filter(Boolean).join(', ');
+
   return (
-    <Link
-      to={`/ads/${ad.id}`}
-      className="bg-white border border-olx-border rounded overflow-hidden hover:shadow-md transition-shadow block"
-    >
-      {/* Image */}
-      <div className="relative aspect-[4/3] bg-gray-100 overflow-hidden">
+    <Link to={`/ads/${ad.id}`} className="card-sellora group block overflow-hidden">
+      {/* Image — fixed 4:3 ratio, cropped to fill so cards stay aligned */}
+      <div className="relative aspect-[4/3] bg-sellora-primary-soft overflow-hidden">
         {imgSrc ? (
-          <img src={imgSrc} alt={ad.title} className="w-full h-full object-cover" loading="lazy" />
+          <img
+            src={imgSrc}
+            alt={ad.title}
+            className="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
+            loading="lazy"
+          />
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-gray-50">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ccc" strokeWidth="1.5">
-              <rect x="3" y="3" width="18" height="18" rx="2" />
+          <div className="w-full h-full flex items-center justify-center bg-sellora-primary-soft">
+            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#A5B4FC" strokeWidth="1.5">
+              <rect x="3" y="3" width="18" height="18" rx="4" />
               <circle cx="8.5" cy="8.5" r="1.5" />
               <path d="m21 15-5-5L5 21" />
             </svg>
@@ -57,40 +61,42 @@ export default function AdCard({ ad, onToggleFavourite, isFavourited }: Props) {
 
         {/* Featured badge */}
         {ad.featured && (
-          <span className="absolute top-2 left-2 bg-olx-yellow text-olx-teal text-[10px] font-bold px-1.5 py-0.5 rounded-sm uppercase">
-            FEATURED
+          <span className="absolute top-2.5 left-2.5 bg-sellora-warm text-white text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wide shadow-sellora-sm">
+            Featured
           </span>
         )}
 
-        {/* Heart button */}
+        {/* Favourite button */}
         <button
           onClick={(e) => { e.preventDefault(); e.stopPropagation(); onToggleFavourite?.(ad.id); }}
-          className="absolute top-2 right-2 w-7 h-7 bg-white rounded-full flex items-center justify-center shadow hover:scale-110 transition-transform"
+          aria-label={isFavourited ? 'Remove from saved ads' : 'Save this ad'}
+          className="absolute top-2.5 right-2.5 w-8 h-8 bg-white/95 backdrop-blur-sm rounded-full flex items-center justify-center shadow-sellora-sm hover:scale-110 hover:shadow-sellora transition-all"
         >
           <Heart
-            size={14}
-            fill={isFavourited ? '#ff6b6b' : 'none'}
-            stroke={isFavourited ? '#ff6b6b' : '#666'}
-            strokeWidth={2}
+            size={15}
+            fill={isFavourited ? '#EC4899' : 'none'}
+            stroke={isFavourited ? '#EC4899' : '#6B7280'}
+            strokeWidth={2.2}
           />
         </button>
       </div>
 
       {/* Content */}
-      <div className="p-2.5">
-        <p className="font-bold text-olx-text text-base leading-tight">
+      <div className="p-3.5">
+        <p className="font-extrabold text-sellora-text text-[19px] leading-none tracking-tight">
           ₹{Number(ad.price).toLocaleString('en-IN')}
         </p>
-        <p className="text-olx-text text-sm mt-0.5 line-clamp-2 leading-snug">
+        <p className="text-sellora-text text-[13px] font-medium mt-2 line-clamp-2 leading-snug min-h-[2.4rem] group-hover:text-sellora-primary transition-colors">
           {ad.title}
         </p>
-        <div className="flex items-center justify-between mt-1.5">
-          <p className="text-olx-muted text-xs truncate">
-            {[ad.city, ad.state].filter(Boolean).join(', ')}
-          </p>
-          <p className="text-olx-muted text-xs whitespace-nowrap ml-1">
+        <div className="flex items-center justify-between gap-2 mt-2.5 pt-2.5 border-t border-sellora-border">
+          <span className="flex items-center gap-1 min-w-0 text-sellora-muted text-[11px]">
+            <MapPin size={12} className="shrink-0 text-sellora-primary/60" />
+            <span className="truncate">{location || 'India'}</span>
+          </span>
+          <span className="text-sellora-muted text-[11px] whitespace-nowrap shrink-0">
             {formatDate(ad.createdAt)}
-          </p>
+          </span>
         </div>
       </div>
     </Link>

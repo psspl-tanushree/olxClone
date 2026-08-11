@@ -61,9 +61,9 @@ export default function AdminUsers() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search name or email..."
-          className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-olx-teal"
+          className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-sellora-primary"
         />
-        <button type="submit" className="bg-olx-teal text-white px-4 py-2 rounded-lg hover:opacity-90">
+        <button type="submit" className="bg-sellora-primary text-white px-4 py-2 rounded-lg hover:opacity-90">
           <Search size={16} />
         </button>
       </form>
@@ -87,7 +87,7 @@ export default function AdminUsers() {
                 <td className="px-4 py-3 text-gray-400">{u.id}</td>
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-full bg-olx-teal flex items-center justify-center text-white font-bold text-xs shrink-0">
+                    <div className="w-8 h-8 rounded-full bg-sellora-primary flex items-center justify-center text-white font-bold text-xs shrink-0">
                       {u.name?.[0]?.toUpperCase()}
                     </div>
                     <span className="font-medium text-gray-800">{u.name}</span>

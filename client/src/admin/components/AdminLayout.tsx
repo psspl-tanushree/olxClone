@@ -26,11 +26,11 @@ export default function AdminLayout() {
   return (
     <div className="flex min-h-screen bg-gray-100">
       {/* Sidebar */}
-      <aside className="w-56 bg-olx-teal shrink-0 flex flex-col">
+      <aside className="w-56 bg-sellora-primary shrink-0 flex flex-col">
         <div className="px-5 py-4 border-b border-white/20">
           <span className="text-white font-black text-xl tracking-tight">
-            OL<span className="text-olx-yellow">X</span>
-            <span className="text-olx-yellow text-xs font-semibold ml-1">ADMIN</span>
+            Sellora
+            <span className="text-sellora-accent text-xs font-semibold ml-1.5 align-middle">ADMIN</span>
           </span>
         </div>
 

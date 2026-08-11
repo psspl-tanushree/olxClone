@@ -24,7 +24,7 @@ import AdminPayments from './admin/pages/AdminPayments';
 
 function MainLayout() {
   return (
-    <div className="min-h-screen bg-olx-bg flex flex-col">
+    <div className="min-h-screen bg-sellora-bg flex flex-col">
       <Navbar />
       <div className="flex-1">
         <Routes>

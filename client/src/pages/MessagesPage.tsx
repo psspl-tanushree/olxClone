@@ -89,14 +89,14 @@ export default function MessagesPage() {
   };
 
   return (
-    <div className="bg-olx-bg min-h-screen">
+    <div className="bg-sellora-bg min-h-screen">
       <div className="max-w-[1200px] mx-auto px-4 py-4">
-        <div className="bg-white border border-olx-border rounded-lg overflow-hidden" style={{ height: 'calc(100vh - 120px)' }}>
+        <div className="bg-white border border-sellora-border rounded-lg overflow-hidden" style={{ height: 'calc(100vh - 120px)' }}>
           <div className="flex h-full">
             {/* Sidebar */}
-            <div className={`${activeThread ? 'hidden md:flex' : 'flex'} flex-col w-full md:w-80 border-r border-olx-border`}>
-              <div className="p-4 border-b border-olx-border">
-                <h1 className="font-bold text-olx-text text-lg">Messages</h1>
+            <div className={`${activeThread ? 'hidden md:flex' : 'flex'} flex-col w-full md:w-80 border-r border-sellora-border`}>
+              <div className="p-4 border-b border-sellora-border">
+                <h1 className="font-bold text-sellora-text text-lg">Messages</h1>
               </div>
               <div className="flex-1 overflow-y-auto">
                 {loading ? (
@@ -107,24 +107,24 @@ export default function MessagesPage() {
                   </div>
                 ) : threads.length === 0 ? (
                   <div className="flex flex-col items-center justify-center h-full text-center p-6">
-                    <MessageSquare size={48} className="text-olx-border mb-3" />
-                    <p className="font-semibold text-olx-text">No messages yet</p>
-                    <p className="text-olx-muted text-sm mt-1">Start chatting with sellers</p>
+                    <MessageSquare size={48} className="text-sellora-border mb-3" />
+                    <p className="font-semibold text-sellora-text">No messages yet</p>
+                    <p className="text-sellora-muted text-sm mt-1">Start chatting with sellers</p>
                   </div>
                 ) : (
                   threads.map((t, i) => (
                     <button
                       key={i}
                       onClick={() => openThread(t)}
-                      className={`w-full flex items-center gap-3 p-4 hover:bg-olx-bg border-b border-olx-border text-left transition-colors ${activeThread?.otherUser.id === t.otherUser.id && activeThread?.ad.id === t.ad.id ? 'bg-blue-50' : ''}`}
+                      className={`w-full flex items-center gap-3 p-4 hover:bg-sellora-bg border-b border-sellora-border text-left transition-colors ${activeThread?.otherUser.id === t.otherUser.id && activeThread?.ad.id === t.ad.id ? 'bg-blue-50' : ''}`}
                     >
-                      <div className="w-10 h-10 rounded-full bg-olx-teal flex items-center justify-center text-white font-bold shrink-0">
+                      <div className="w-10 h-10 rounded-full bg-sellora-primary flex items-center justify-center text-white font-bold shrink-0">
                         {t.otherUser.name?.[0]?.toUpperCase()}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="font-semibold text-olx-text text-sm truncate">{t.otherUser.name}</p>
-                        <p className="text-olx-muted text-xs truncate">{t.ad.title}</p>
-                        <p className="text-olx-muted text-xs truncate mt-0.5">{t.lastMessage}</p>
+                        <p className="font-semibold text-sellora-text text-sm truncate">{t.otherUser.name}</p>
+                        <p className="text-sellora-muted text-xs truncate">{t.ad.title}</p>
+                        <p className="text-sellora-muted text-xs truncate mt-0.5">{t.lastMessage}</p>
                       </div>
                     </button>
                   ))
@@ -137,20 +137,20 @@ export default function MessagesPage() {
               {activeThread ? (
                 <>
                   {/* Chat Header */}
-                  <div className="flex items-center gap-3 p-4 border-b border-olx-border">
-                    <button onClick={() => setActiveThread(null)} className="md:hidden text-olx-muted hover:text-olx-teal">
+                  <div className="flex items-center gap-3 p-4 border-b border-sellora-border">
+                    <button onClick={() => setActiveThread(null)} className="md:hidden text-sellora-muted hover:text-sellora-primary">
                       <ArrowLeft size={20} />
                     </button>
-                    <div className="w-9 h-9 rounded-full bg-olx-teal flex items-center justify-center text-white font-bold shrink-0">
+                    <div className="w-9 h-9 rounded-full bg-sellora-primary flex items-center justify-center text-white font-bold shrink-0">
                       {activeThread.otherUser.name?.[0]?.toUpperCase()}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="font-semibold text-olx-text text-sm">{activeThread.otherUser.name}</p>
-                      <p className="text-olx-muted text-xs truncate">{activeThread.ad.title} · ₹{Number(activeThread.ad.price).toLocaleString('en-IN')}</p>
+                      <p className="font-semibold text-sellora-text text-sm">{activeThread.otherUser.name}</p>
+                      <p className="text-sellora-muted text-xs truncate">{activeThread.ad.title} · ₹{Number(activeThread.ad.price).toLocaleString('en-IN')}</p>
                     </div>
                     <button
                       onClick={() => navigate(`/ads/${activeThread.ad.id}`)}
-                      className="text-xs text-olx-teal hover:underline shrink-0"
+                      className="text-xs text-sellora-primary hover:underline shrink-0"
                     >
                       View Ad
                     </button>
@@ -159,15 +159,15 @@ export default function MessagesPage() {
                   {/* Messages */}
                   <div className="flex-1 overflow-y-auto p-4 space-y-3">
                     {messages.length === 0 ? (
-                      <div className="text-center text-olx-muted text-sm py-8">Start the conversation</div>
+                      <div className="text-center text-sellora-muted text-sm py-8">Start the conversation</div>
                     ) : (
                       messages.map((m) => {
                         const isMine = m.senderId === user!.id;
                         return (
                           <div key={m.id} className={`flex ${isMine ? 'justify-end' : 'justify-start'}`}>
-                            <div className={`max-w-[70%] rounded-lg px-3 py-2 text-sm ${isMine ? 'bg-olx-teal text-white' : 'bg-olx-bg text-olx-text border border-olx-border'}`}>
+                            <div className={`max-w-[70%] rounded-lg px-3 py-2 text-sm ${isMine ? 'bg-sellora-primary text-white' : 'bg-sellora-bg text-sellora-text border border-sellora-border'}`}>
                               <p>{m.body}</p>
-                              <p className={`text-[10px] mt-1 ${isMine ? 'text-white/60' : 'text-olx-muted'}`}>
+                              <p className={`text-[10px] mt-1 ${isMine ? 'text-white/60' : 'text-sellora-muted'}`}>
                                 {new Date(m.createdAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}
                               </p>
                             </div>
@@ -178,28 +178,28 @@ export default function MessagesPage() {
                   </div>
 
                   {/* Input */}
-                  <div className="p-4 border-t border-olx-border flex gap-2">
+                  <div className="p-4 border-t border-sellora-border flex gap-2">
                     <input
                       value={reply}
                       onChange={(e) => setReply(e.target.value)}
                       onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleSend()}
                       placeholder="Type a message..."
-                      className="flex-1 border border-olx-border rounded-full px-4 py-2 text-sm focus:outline-none focus:border-olx-teal"
+                      className="flex-1 border border-sellora-border rounded-full px-4 py-2 text-sm focus:outline-none focus:border-sellora-primary"
                     />
                     <button
                       onClick={handleSend}
                       disabled={!reply.trim() || sending}
-                      className="w-10 h-10 rounded-full bg-olx-yellow flex items-center justify-center hover:bg-olx-yellow-hover disabled:opacity-60 transition-colors shrink-0"
+                      className="w-10 h-10 rounded-full btn-gradient flex items-center justify-center disabled:opacity-60 transition-colors shrink-0"
                     >
-                      <Send size={16} className="text-olx-teal" />
+                      <Send size={16} className="text-sellora-primary" />
                     </button>
                   </div>
                 </>
               ) : (
                 <div className="flex-1 flex flex-col items-center justify-center text-center p-8">
-                  <MessageSquare size={64} className="text-olx-border mb-4" />
-                  <p className="text-lg font-semibold text-olx-text">Select a conversation</p>
-                  <p className="text-olx-muted text-sm mt-1">Choose from your existing conversations on the left</p>
+                  <MessageSquare size={64} className="text-sellora-border mb-4" />
+                  <p className="text-lg font-semibold text-sellora-text">Select a conversation</p>
+                  <p className="text-sellora-muted text-sm mt-1">Choose from your existing conversations on the left</p>
                 </div>
               )}
             </div>

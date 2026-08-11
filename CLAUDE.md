@@ -1,7 +1,7 @@
-# OLX Clone – Claude Code Project
+# Sellora – Claude Code Project
 
 ## Project Overview
-A full-stack web portal replicating core OLX India (olx.in) functionality, built as part of the PSSPL AI Acceleration Month practical evaluation (8-day sprint, starting 2026-04-28).
+Sellora is a full-stack marketplace web portal (buy/sell classifieds), built as part of the PSSPL AI Acceleration Month practical evaluation (8-day sprint, starting 2026-04-28). The UI is branded as **Sellora**; the repository folder, database name and other technical identifiers still use the original `olx*` naming and are intentionally left unchanged.
 
 ## Tech Stack
 - **Frontend:** React 18 + TypeScript + Vite + Tailwind CSS
