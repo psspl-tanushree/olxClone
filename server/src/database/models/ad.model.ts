@@ -61,6 +61,9 @@ export class Ad extends Model {
   @Column({ type: DataType.INTEGER, defaultValue: 0 })
   views: number;
 
+  @Column({ type: DataType.DATE, allowNull: true, field: 'featured_until' })
+  featuredUntil: Date;
+
   @HasMany(() => Favourite)
   favourites: Favourite[];
 }

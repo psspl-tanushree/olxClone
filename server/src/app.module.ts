@@ -8,6 +8,8 @@ import { CategoriesModule } from './categories/categories.module';
 import { FavouritesModule } from './favourites/favourites.module';
 import { UploadModule } from './upload/upload.module';
 import { MessagesModule } from './messages/messages.module';
+import { PaymentsModule } from './payments/payments.module';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -20,6 +22,8 @@ import { MessagesModule } from './messages/messages.module';
     FavouritesModule,
     UploadModule,
     MessagesModule,
+    PaymentsModule,
+    AdminModule,
   ],
 })
 export class AppModule {}
