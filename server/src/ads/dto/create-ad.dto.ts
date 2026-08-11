@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsOptional, IsArray, Min } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsArray, IsObject, Min } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class CreateAdDto {
@@ -34,4 +34,8 @@ export class CreateAdDto {
   @IsOptional()
   @Type(() => Number)
   lng?: number;
+
+  @IsOptional()
+  @IsObject()
+  attributes?: Record<string, string | string[]>;
 }

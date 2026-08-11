@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import { Search, MapPin, ChevronDown, Plus, Heart, MessageSquare, User, LogOut, ChevronRight, X, ShieldCheck } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../store';
@@ -17,6 +17,7 @@ export default function Navbar() {
   const dispatch = useDispatch<AppDispatch>();
   const { user } = useSelector((state: RootState) => state.auth);
   const navigate = useNavigate();
+  const location = useLocation();
   const [searchParams] = useSearchParams();
 
   const [searchQuery, setSearchQuery] = useState(searchParams.get('search') || '');
@@ -27,6 +28,38 @@ export default function Navbar() {
 
   const cityRef = useRef<HTMLDivElement>(null);
   const profileRef = useRef<HTMLDivElement>(null);
+
+  // Debounce live search — only active when already on the search page
+  const isOnSearchPage = location.pathname === '/search';
+  const latestSearchParamsRef = useRef(searchParams);
+  const lastPushedRef = useRef(searchParams.get('search') || '');
+  const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Mirror the latest params into a ref so the debounced navigate can read them
+  // without re-running (and restarting) the debounce on every param change.
+  useEffect(() => {
+    latestSearchParamsRef.current = searchParams;
+  }, [searchParams]);
+
+  useEffect(() => {
+    if (!isOnSearchPage) return;
+    if (searchQuery.trim() === lastPushedRef.current) return;
+
+    if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+    debounceTimerRef.current = setTimeout(() => {
+      debounceTimerRef.current = null;
+      lastPushedRef.current = searchQuery.trim();
+      const params = new URLSearchParams(latestSearchParamsRef.current);
+      if (searchQuery.trim()) params.set('search', searchQuery.trim());
+      else params.delete('search');
+      params.delete('page');
+      navigate(`/search?${params.toString()}`, { replace: true });
+    }, 400);
+
+    return () => {
+      if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+    };
+  }, [searchQuery, isOnSearchPage, navigate]);
 
   // Keep Navbar city in sync with URL params (sidebar filter updates URL directly)
   useEffect(() => {
@@ -45,6 +78,9 @@ export default function Navbar() {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
+    // Cancel any pending debounce so we don't double-navigate
+    if (debounceTimerRef.current) { clearTimeout(debounceTimerRef.current); debounceTimerRef.current = null; }
+    lastPushedRef.current = searchQuery.trim();
     const params = new URLSearchParams();
     if (searchQuery) params.set('search', searchQuery);
     if (selectedCity !== 'India') params.set('city', selectedCity);
@@ -55,9 +91,13 @@ export default function Navbar() {
   };
 
   const handleClearSearch = () => {
+    // Cancel any pending debounce
+    if (debounceTimerRef.current) { clearTimeout(debounceTimerRef.current); debounceTimerRef.current = null; }
+    lastPushedRef.current = '';
     setSearchQuery('');
     const params = new URLSearchParams(searchParams);
     params.delete('search');
+    params.delete('page');
     navigate(`/search?${params.toString()}`);
   };
 

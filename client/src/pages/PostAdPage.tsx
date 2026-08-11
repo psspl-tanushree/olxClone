@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
@@ -7,6 +7,8 @@ import { RootState, AppDispatch } from '../store';
 import { fetchCategoriesHandler } from '../store/slices/categoriesSlice';
 import { createAdHandler } from '../store/slices/adsSlice';
 import { uploadImages } from '../services/upload.service';
+import DynamicAdForm from '../components/adform/DynamicAdForm';
+import { AdAttributes } from '../types';
 
 const STEPS = ['Category', 'Details', 'Photos & Location'];
 
@@ -23,7 +25,7 @@ export default function PostAdPage() {
   const navigate = useNavigate();
 
   const [step, setStep] = useState(0);
-  const [selectedCategory, setSelectedCategory] = useState<{ id: number; name: string } | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<{ id: number; name: string; slug: string } | null>(null);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
@@ -32,10 +34,27 @@ export default function PostAdPage() {
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
+  const [attributes, setAttributes] = useState<AdAttributes>({});
 
   useEffect(() => {
     dispatch(fetchCategoriesHandler());
   }, [dispatch]);
+
+  // Reset attributes when category changes
+  useEffect(() => {
+    setAttributes({});
+  }, [selectedCategory?.slug]);
+
+  const handleAttrChange = useCallback((key: string, value: string | string[]) => {
+    setAttributes((prev) => {
+      const isEmpty = !value || (Array.isArray(value) && value.length === 0) || value === '';
+      if (isEmpty) {
+        const { [key]: _, ...rest } = prev;
+        return rest;
+      }
+      return { ...prev, [key]: value };
+    });
+  }, []);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
@@ -45,15 +64,12 @@ export default function PostAdPage() {
     }
     const newFiles = [...imageFiles, ...files].slice(0, 5);
     setImageFiles(newFiles);
-    const urls = newFiles.map((f) => URL.createObjectURL(f));
-    setPreviews(urls);
+    setPreviews(newFiles.map((f) => URL.createObjectURL(f)));
   };
 
   const removeImage = (i: number) => {
-    const newFiles = imageFiles.filter((_, idx) => idx !== i);
-    const newPreviews = previews.filter((_, idx) => idx !== i);
-    setImageFiles(newFiles);
-    setPreviews(newPreviews);
+    setImageFiles((f) => f.filter((_, idx) => idx !== i));
+    setPreviews((p) => p.filter((_, idx) => idx !== i));
   };
 
   const handleSubmit = async () => {
@@ -74,6 +90,7 @@ export default function PostAdPage() {
         city: city.trim(),
         state: state.trim(),
         images,
+        attributes: Object.keys(attributes).length > 0 ? attributes : undefined,
       }));
       if (createAdHandler.fulfilled.match(result)) {
         toast.success('Ad posted successfully!');
@@ -88,6 +105,8 @@ export default function PostAdPage() {
     }
   };
 
+  const canProceedToPhotos = title.trim() && price;
+
   return (
     <div className="bg-olx-bg min-h-screen py-6">
       <div className="max-w-2xl mx-auto px-4">
@@ -97,9 +116,9 @@ export default function PostAdPage() {
             <div key={s} className="flex items-center flex-1">
               <div className="flex flex-col items-center">
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-colors ${
-                  i < step ? 'bg-green-500 text-white' :
-                  i === step ? 'bg-olx-teal text-white' :
-                  'bg-white border-2 border-olx-border text-olx-muted'
+                  i < step ? 'bg-green-500 text-white'
+                  : i === step ? 'bg-olx-teal text-white'
+                  : 'bg-white border-2 border-olx-border text-olx-muted'
                 }`}>
                   {i < step ? <Check size={16} /> : i + 1}
                 </div>
@@ -122,16 +141,16 @@ export default function PostAdPage() {
                 {categories.map((c) => (
                   <button
                     key={c.id}
-                    onClick={() => { setSelectedCategory(c); setStep(1); }}
+                    onClick={() => { setSelectedCategory({ id: c.id, name: c.name, slug: c.slug }); setStep(1); }}
                     className={`flex items-center gap-3 p-3 border-2 rounded-lg text-left hover:border-olx-teal hover:bg-blue-50 transition-colors ${
                       selectedCategory?.id === c.id ? 'border-olx-teal bg-blue-50' : 'border-olx-border'
                     }`}
                   >
                     <span className="text-2xl shrink-0">
-                      {c.slug === 'cars' ? '🚗' : c.slug === 'motorcycles' ? '🏍️' :
-                       c.slug === 'mobile-phones' ? '📱' : c.slug === 'electronics' ? '💻' :
-                       c.slug === 'furniture' ? '🛋️' : c.slug === 'fashion' ? '👗' :
-                       c.slug === 'real-estate' ? '🏠' : c.slug === 'jobs' ? '💼' : '📦'}
+                      {c.slug === 'cars' ? '🚗' : c.slug === 'motorcycles' ? '🏍️'
+                       : c.slug === 'mobile-phones' ? '📱' : c.slug === 'electronics' ? '💻'
+                       : c.slug === 'furniture-home-decor' ? '🛋️' : c.slug === 'fashion' ? '👗'
+                       : c.slug === 'real-estate' ? '🏠' : c.slug === 'jobs' ? '💼' : '📦'}
                     </span>
                     <span className="text-sm font-medium text-olx-text">{c.name}</span>
                   </button>
@@ -170,8 +189,8 @@ export default function PostAdPage() {
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     maxLength={4096}
-                    rows={5}
-                    placeholder="Include condition, features, reason for selling..."
+                    rows={4}
+                    placeholder="Include condition, features, reason for selling…"
                     className="w-full border border-olx-border rounded px-4 py-2.5 text-sm focus:outline-none focus:border-olx-teal resize-none"
                   />
                   <p className="text-xs text-olx-muted text-right mt-0.5">{description.length}/4096</p>
@@ -194,8 +213,22 @@ export default function PostAdPage() {
                   </div>
                 </div>
 
+                {/* Dynamic category-specific fields */}
+                {selectedCategory?.slug && (
+                  <div className="border-t border-olx-border pt-4">
+                    <DynamicAdForm
+                      categorySlug={selectedCategory.slug}
+                      values={attributes}
+                      onChange={handleAttrChange}
+                    />
+                  </div>
+                )}
+
                 <button
-                  onClick={() => { if (!title.trim() || !price) { toast.error('Title and price required'); return; } setStep(2); }}
+                  onClick={() => {
+                    if (!canProceedToPhotos) { toast.error('Title and price required'); return; }
+                    setStep(2);
+                  }}
                   className="w-full bg-olx-yellow text-olx-teal font-bold py-3 rounded flex items-center justify-center gap-2 hover:bg-olx-yellow-hover transition-colors"
                 >
                   Continue <ChevronRight size={18} />
@@ -264,10 +297,8 @@ export default function PostAdPage() {
                 </div>
 
                 <div className="flex gap-3 pt-2">
-                  <button
-                    onClick={() => setStep(1)}
-                    className="flex-1 border border-olx-border text-olx-text font-semibold py-3 rounded hover:bg-olx-bg transition-colors"
-                  >
+                  <button onClick={() => setStep(1)}
+                    className="flex-1 border border-olx-border text-olx-text font-semibold py-3 rounded hover:bg-olx-bg transition-colors">
                     Back
                   </button>
                   <button
@@ -275,7 +306,7 @@ export default function PostAdPage() {
                     disabled={submitting || loading}
                     className="flex-1 bg-olx-yellow text-olx-teal font-bold py-3 rounded hover:bg-olx-yellow-hover transition-colors disabled:opacity-60"
                   >
-                    {submitting || loading ? 'Posting...' : 'Post Your Ad'}
+                    {submitting || loading ? 'Posting…' : 'Post Your Ad'}
                   </button>
                 </div>
               </div>

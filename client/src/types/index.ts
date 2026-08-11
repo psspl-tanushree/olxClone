@@ -1,3 +1,48 @@
+// ─── Filter Schema Types ─────────────────────────────────────────────────────
+
+export type FieldType =
+  | 'dropdown'
+  | 'multi-select'
+  | 'radio'
+  | 'checkbox'
+  | 'range'
+  | 'text'
+  | 'number';
+
+export interface FieldOption {
+  value: string;
+  label: string;
+}
+
+export interface FilterFieldSchema {
+  key: string;
+  label: string;
+  type: FieldType;
+  options?: FieldOption[];
+  dependentOptions?: Record<string, FieldOption[]>;
+  dependsOn?: string;
+  required?: boolean;
+  showInFilters?: boolean;
+  showInCreateAd?: boolean;
+  priority: number;
+  placeholder?: string;
+  unit?: string;
+  seoParam?: string;
+  validation?: { min?: number; max?: number };
+}
+
+export interface CategoryFilterSchema {
+  categorySlug: string;
+  categoryName: string;
+  icon: string;
+  filters: FilterFieldSchema[];
+}
+
+// Attribute values in an ad (key → scalar or array for multi-select)
+export type AdAttributes = Record<string, string | string[]>;
+
+// ─── Domain Types ─────────────────────────────────────────────────────────────
+
 export interface Ad {
   id: number;
   title: string;
@@ -14,6 +59,7 @@ export interface Ad {
   views: number;
   featured?: boolean;
   featuredUntil?: string;
+  attributes?: AdAttributes;
   createdAt: string;
   category?: { id: number; name: string; slug: string };
   user?: { id: number; name: string; phone?: string; city?: string; avatar?: string };

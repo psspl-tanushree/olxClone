@@ -10,6 +10,7 @@ import { UploadModule } from './upload/upload.module';
 import { MessagesModule } from './messages/messages.module';
 import { PaymentsModule } from './payments/payments.module';
 import { AdminModule } from './admin/admin.module';
+import { FilterSchemasModule } from './filter-schemas/filter-schemas.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { AdminModule } from './admin/admin.module';
     MessagesModule,
     PaymentsModule,
     AdminModule,
+    FilterSchemasModule,
   ],
 })
 export class AppModule {}

@@ -64,6 +64,9 @@ export class Ad extends Model {
   @Column({ type: DataType.DATE, allowNull: true, field: 'featured_until' })
   featuredUntil: Date;
 
+  @Column({ type: DataType.JSONB, defaultValue: {} })
+  attributes: Record<string, string | string[]>;
+
   @HasMany(() => Favourite)
   favourites: Favourite[];
 }
